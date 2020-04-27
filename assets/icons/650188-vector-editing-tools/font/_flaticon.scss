@@ -1,0 +1,139 @@
+    /*
+    Flaticon icon font: Flaticon
+    Creation date: 18/12/2017 14:57
+    */
+
+    @font-face {
+  font-family: "Flaticon";
+  src: url("./Flaticon.eot");
+  src: url("./Flaticon.eot?#iefix") format("embedded-opentype"),
+       url("./Flaticon.woff") format("woff"),
+       url("./Flaticon.ttf") format("truetype"),
+       url("./Flaticon.svg#Flaticon") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  @font-face {
+    font-family: "Flaticon";
+    src: url("./Flaticon.svg#Flaticon") format("svg");
+  }
+}
+
+    .fi:before{
+        display: inline-block;
+  font-family: "Flaticon";
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  line-height: 1;
+  text-decoration: inherit;
+  text-rendering: optimizeLegibility;
+  text-transform: none;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+    }
+
+    .flaticon-001-grid:before { content: "\f100"; }
+.flaticon-002-curve-line:before { content: "\f101"; }
+.flaticon-003-segment:before { content: "\f102"; }
+.flaticon-004-type-1:before { content: "\f103"; }
+.flaticon-005-distort:before { content: "\f104"; }
+.flaticon-006-type:before { content: "\f105"; }
+.flaticon-007-mesh:before { content: "\f106"; }
+.flaticon-008-stroke:before { content: "\f107"; }
+.flaticon-009-pen-tool:before { content: "\f108"; }
+.flaticon-010-artboard:before { content: "\f109"; }
+.flaticon-011-opacity:before { content: "\f10a"; }
+.flaticon-012-file:before { content: "\f10b"; }
+.flaticon-013-export:before { content: "\f10c"; }
+.flaticon-014-save:before { content: "\f10d"; }
+.flaticon-015-new:before { content: "\f10e"; }
+.flaticon-016-exclude:before { content: "\f10f"; }
+.flaticon-017-lasso:before { content: "\f110"; }
+.flaticon-018-intersect:before { content: "\f111"; }
+.flaticon-019-front:before { content: "\f112"; }
+.flaticon-020-merge:before { content: "\f113"; }
+.flaticon-021-bottom:before { content: "\f114"; }
+.flaticon-022-align-center-1:before { content: "\f115"; }
+.flaticon-023-top-alignment:before { content: "\f116"; }
+.flaticon-024-align-right:before { content: "\f117"; }
+.flaticon-025-align-center:before { content: "\f118"; }
+.flaticon-026-align-left:before { content: "\f119"; }
+.flaticon-027-swatches:before { content: "\f11a"; }
+.flaticon-028-magic-wand:before { content: "\f11b"; }
+.flaticon-029-rgb:before { content: "\f11c"; }
+.flaticon-030-squares:before { content: "\f11d"; }
+.flaticon-031-layers:before { content: "\f11e"; }
+.flaticon-032-paint-spray:before { content: "\f11f"; }
+.flaticon-033-transform:before { content: "\f120"; }
+.flaticon-034-loupe:before { content: "\f121"; }
+.flaticon-035-blend:before { content: "\f122"; }
+.flaticon-036-ruler:before { content: "\f123"; }
+.flaticon-037-pipette:before { content: "\f124"; }
+.flaticon-038-vector:before { content: "\f125"; }
+.flaticon-039-cursor-1:before { content: "\f126"; }
+.flaticon-040-reflect:before { content: "\f127"; }
+.flaticon-041-rotate:before { content: "\f128"; }
+.flaticon-042-scissors:before { content: "\f129"; }
+.flaticon-043-cutter:before { content: "\f12a"; }
+.flaticon-044-eraser:before { content: "\f12b"; }
+.flaticon-045-pencil:before { content: "\f12c"; }
+.flaticon-046-paint-brush:before { content: "\f12d"; }
+.flaticon-047-hexagon:before { content: "\f12e"; }
+.flaticon-048-ellipse:before { content: "\f12f"; }
+.flaticon-049-rectangle:before { content: "\f130"; }
+.flaticon-050-cursor:before { content: "\f131"; }
+    
+    $font-Flaticon-001-grid: "\f100";
+    $font-Flaticon-002-curve-line: "\f101";
+    $font-Flaticon-003-segment: "\f102";
+    $font-Flaticon-004-type-1: "\f103";
+    $font-Flaticon-005-distort: "\f104";
+    $font-Flaticon-006-type: "\f105";
+    $font-Flaticon-007-mesh: "\f106";
+    $font-Flaticon-008-stroke: "\f107";
+    $font-Flaticon-009-pen-tool: "\f108";
+    $font-Flaticon-010-artboard: "\f109";
+    $font-Flaticon-011-opacity: "\f10a";
+    $font-Flaticon-012-file: "\f10b";
+    $font-Flaticon-013-export: "\f10c";
+    $font-Flaticon-014-save: "\f10d";
+    $font-Flaticon-015-new: "\f10e";
+    $font-Flaticon-016-exclude: "\f10f";
+    $font-Flaticon-017-lasso: "\f110";
+    $font-Flaticon-018-intersect: "\f111";
+    $font-Flaticon-019-front: "\f112";
+    $font-Flaticon-020-merge: "\f113";
+    $font-Flaticon-021-bottom: "\f114";
+    $font-Flaticon-022-align-center-1: "\f115";
+    $font-Flaticon-023-top-alignment: "\f116";
+    $font-Flaticon-024-align-right: "\f117";
+    $font-Flaticon-025-align-center: "\f118";
+    $font-Flaticon-026-align-left: "\f119";
+    $font-Flaticon-027-swatches: "\f11a";
+    $font-Flaticon-028-magic-wand: "\f11b";
+    $font-Flaticon-029-rgb: "\f11c";
+    $font-Flaticon-030-squares: "\f11d";
+    $font-Flaticon-031-layers: "\f11e";
+    $font-Flaticon-032-paint-spray: "\f11f";
+    $font-Flaticon-033-transform: "\f120";
+    $font-Flaticon-034-loupe: "\f121";
+    $font-Flaticon-035-blend: "\f122";
+    $font-Flaticon-036-ruler: "\f123";
+    $font-Flaticon-037-pipette: "\f124";
+    $font-Flaticon-038-vector: "\f125";
+    $font-Flaticon-039-cursor-1: "\f126";
+    $font-Flaticon-040-reflect: "\f127";
+    $font-Flaticon-041-rotate: "\f128";
+    $font-Flaticon-042-scissors: "\f129";
+    $font-Flaticon-043-cutter: "\f12a";
+    $font-Flaticon-044-eraser: "\f12b";
+    $font-Flaticon-045-pencil: "\f12c";
+    $font-Flaticon-046-paint-brush: "\f12d";
+    $font-Flaticon-047-hexagon: "\f12e";
+    $font-Flaticon-048-ellipse: "\f12f";
+    $font-Flaticon-049-rectangle: "\f130";
+    $font-Flaticon-050-cursor: "\f131";

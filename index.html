@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>WEB DESIGNER</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./assets/css/editor.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <script src='./assets/js/assist/scrollbar.js'></script>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-inverse">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#" style='margin-left: 10px;'>WEB DESIGNER</a>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> HELP</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid text-left">
+      <div class="row content">
+          <div class="col-sm-3 sidenav TA" id='Scrollstyle'>
+            <div class="panel panel-default">
+              <div class="panel-body" style='padding-top: 7px; padding-bottom: 7px;'>
+                <button class="drawing-tool svg-rect" id='bn-rect'></button>
+                <button class="drawing-tool svg-line" id='bn-line'></button>
+                <button class="drawing-tool svg-ellipse" id='bn-ellipse'></button>
+                <button class="drawing-tool svg-picture" id='bn-picture'></button>
+                <button class="drawing-tool svg-barcode" id='bn-barcode'></button>
+                <button class="drawing-tool svg-text" id='bn-text'></button>
+              </div>
+            </div>
+
+            <div class="panel panel-primary">
+              <div class="panel-heading">Properties</div>
+              <div class="panel-body">
+                <div class='container-fluid' id='property'>
+                
+                  <div class='row'>
+                    <div class='col-sm-5'>
+                      <label id='Object' style='float: right'>Name</label>
+                    </div>
+                    <div class='col-sm-7'>
+                      <input type='text' style='width: 100%'/>
+                    </div>
+                  </div>
+                  
+                  <div class='row' style='margin-top: 6px;'>
+                    <div class='col-sm-4'>
+                      <label id='Object' style='float: right'>Class</label>
+                    </div>
+                    <div class='col-sm-8'>
+                      <input type='text' style='width: 100%'/>
+                    </div>
+                  </div>
+
+                  <div class='row' style='margin-top: 6px;'>
+                    <div class='col-sm-4'>
+                      <label id='Object' style='float: right'>Label</label>
+                    </div>
+                    <div class='col-sm-8'>
+                      <input type='text' style='width: 100%'/>
+                    </div>
+                  </div>  
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-sm-9 text-left"> 
+            <div id='panel' class='screen'></div>
+          </div>  
+      </div>
+    </div>
+
+    <footer class="container-fluid text-center">
+      <p>by DAVID</p>
+    </footer>
+
+  </body>
+  <script src='./assets/js/main.js'></script>
+</html>
