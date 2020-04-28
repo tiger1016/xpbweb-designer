@@ -22,8 +22,9 @@ footer {
 
 .drawing-tool {
   zoom: 100%;
-  width: 32px;
-  height: 32px;
+  width: 55px;
+  height: 50px;
+  margin-left: 5px;
 }
 
 .svg-rect {
@@ -112,4 +113,12 @@ footer {
   .row.content {
     height: auto;
   } 
+
+  .slider {
+    /* margin-top: 50%; */
+  }
+}
+
+input[type=number]::-webkit-inner-spin-button {
+    opacity: 1
 }
