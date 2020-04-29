@@ -65,42 +65,60 @@ footer {
   overflow-y: scroll;
 }
 
-#Scrollstyle::-webkit-scrollbar-track
+#Scrollstyle1::-webkit-scrollbar-track
 {
-	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
 	border-radius: 10px;
-	background-color: #F5F5F5;
+	background-color: #F5f5f5;
 }
 
-#Scrollstyle::-webkit-scrollbar
+#Scrollstyle1::-webkit-scrollbar
 {
 	width: 13px;
-	background-color: #F5F5F5;
+	background-color: #f5f5f5;
 }
 
-#Scrollstyle::-webkit-scrollbar-thumb
+#Scrollstyle1::-webkit-scrollbar-thumb
 {
 	border-radius: 3px;
-	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.8);
 	background-color: rgb(128, 128, 128);
+}
+
+#Scrollstyle2::-webkit-scrollbar-track
+{
+	border-radius: 10px;
+	background-color: #555;
+}
+
+#Scrollstyle2::-webkit-scrollbar
+{
+	width: 13px;
+	background-color: #555;
+}
+
+#Scrollstyle2::-webkit-scrollbar-thumb
+{
+	border-radius: 4px;
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.8);
+	background-color: rgba(0, 0, 50, 0.6);
 }
 
 #panel::-webkit-scrollbar-track
 {
 	border-radius: 10px;
-	background-color: #F5F5F5;
+	background-color: #555;
 }
 
 #panel::-webkit-scrollbar
 {
 	width: 13px;
-	background-color: #F5F5F5;
+	background-color: #555;
 }
 
 #panel::-webkit-scrollbar-thumb
 {
 	border-radius: 3px;
-	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.8);
 	background-color: rgb(128, 128, 128);
 }
 
@@ -121,4 +139,9 @@ footer {
 
 input[type=number]::-webkit-inner-spin-button {
     opacity: 1
+}
+
+.layout_li:hover {
+  color:pink;
+  cursor:pointer;
 }

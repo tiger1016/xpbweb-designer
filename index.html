@@ -10,8 +10,12 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-
-    <script src='./assets/js/assist/scrollbar.js'></script>
+    
+    <script src='./assets/js/assist/layout/layout.js'></script>
+    <script src='./assets/js/assist/property/getElements.js'></script>
+    <script src='./assets/js/assist/property/printShapes.js'></script>
+    <script src='./assets/js/assist/property/readShapes.js'></script>
+    <script src='./assets/js/assist/panel/panel.js'></script>
   </head>
 
   <body>
@@ -30,10 +34,11 @@
 
     <div class="container-fluid text-left">
       <div class="row content">
-          <div class="col-sm-4 sidenav TA" id='Scrollstyle'>
-            <div class="panel panel-default">
-              <div class="panel-body" style='padding-top: 7px; padding-bottom: 7px;'>
-                <button class="drawing-tool svg-rect" id='bn-rect'></button>
+          <div class="col-sm-2 sidenav TA" id='Scrollstyle1'>
+            <div class="panel panel-primary">
+              <div class="panel-heading">Tool Box</div>
+              <div class="panel-body" style='padding-top: 7px; padding-bottom: 7px;' id='toolbox'>
+                <button class="drawing-tool svg-rect" id='bn-rectangle'></button>
                 <button class="drawing-tool svg-line" id='bn-line'></button>
                 <button class="drawing-tool svg-ellipse" id='bn-ellipse'></button>
                 <button class="drawing-tool svg-picture" id='bn-picture'></button>
@@ -43,15 +48,24 @@
             </div>
 
             <div class="panel panel-primary">
+              <div class="panel-heading">Layouts</div>
+              <div class="panel-body">
+                <div class='container-fluid' id='layout'></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-sm-6 text-left"> 
+            <div id='panel' class='screen'></div>
+          </div> 
+
+          <div class="col-sm-4 sidenav TA" id='Scrollstyle2' style='background-color: rgba(255,255,255,0)'> 
+            <div class="panel panel-primary">
               <div class="panel-heading">Properties</div>
               <div class="panel-body">
                 <div class='container-fluid' id='property'></div>
               </div>
             </div>
-          </div>
-
-          <div class="col-sm-8 text-left"> 
-            <div id='panel' class='screen'></div>
           </div>  
       </div>
     </div>
