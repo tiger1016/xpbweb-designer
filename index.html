@@ -5,11 +5,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="./assets/css/editor.css">
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="./assets/js/3rd/jquery.min.js"></script>
+    <script src="./assets/js/3rd/bootstrap.min.js"></script>
+    
+    <script src='./assets/js/3rd/d3.js'></script>
+    <script src='./assets/js/3rd/d3plus.js'></script>
     
     <script src='./assets/js/assist/layout/layout.js'></script>
     <script src='./assets/js/assist/property/getElements.js'></script>
@@ -26,7 +29,9 @@
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> HELP</a></li>
+            <li><a href="javascript: createPanel()"><span class="glyphicon glyphicon-file"></span> New</a></li>
+            <li><a href="javascript: loadPanel()"><span class="glyphicon glyphicon-open"></span> Load</a></li>
+            <li><a href="javascript: savePanel()"><span class="glyphicon glyphicon-log-in"></span> Save</a></li>
           </ul>
         </div>
       </div>
@@ -37,13 +42,7 @@
           <div class="col-sm-2 sidenav TA" id='Scrollstyle1'>
             <div class="panel panel-primary">
               <div class="panel-heading">Tool Box</div>
-              <div class="panel-body" style='padding-top: 7px; padding-bottom: 7px;' id='toolbox'>
-                <button class="drawing-tool svg-rect" id='bn-rectangle'></button>
-                <button class="drawing-tool svg-line" id='bn-line'></button>
-                <button class="drawing-tool svg-ellipse" id='bn-ellipse'></button>
-                <button class="drawing-tool svg-picture" id='bn-picture'></button>
-                <button class="drawing-tool svg-barcode" id='bn-barcode'></button>
-                <button class="drawing-tool svg-text" id='bn-text'></button>
+              <div class="panel-body" id='toolbox'>
               </div>
             </div>
 
@@ -56,7 +55,7 @@
           </div>
 
           <div class="col-sm-6 text-left"> 
-            <div id='panel' class='screen'></div>
+            <div id='panel'></div>
           </div> 
 
           <div class="col-sm-4 sidenav TA" id='Scrollstyle2' style='background-color: rgba(255,255,255,0)'> 

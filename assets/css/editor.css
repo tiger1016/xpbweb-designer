@@ -43,21 +43,13 @@ footer {
   background: url(../icons/type.svg) no-repeat;
 }
 
+
 .svg-barcode {
   background: url(../icons/code.svg) no-repeat;
 }
 
 .svg-picture {
   background: url(../icons/photo.svg) no-repeat;
-}
-
-.screen {
-  background-color: white;
-  margin-top: 35px;
-  margin-left: 20px;
-  width: 400px;
-  height: 600px;
-  overflow-y: scroll;
 }
 
 .TA {
@@ -103,6 +95,16 @@ footer {
 	background-color: rgba(0, 0, 50, 0.6);
 }
 
+.screen {
+  background-color: white;
+  margin-top: 35px;
+  margin-left: 20px;
+  width: 415px;
+  height: 615px;
+  overflow-x: scroll;
+  overflow-y: scroll;
+}
+
 #panel::-webkit-scrollbar-track
 {
 	border-radius: 10px;
@@ -111,7 +113,7 @@ footer {
 
 #panel::-webkit-scrollbar
 {
-	width: 13px;
+	width: 15px;
 	background-color: #555;
 }
 
@@ -121,6 +123,17 @@ footer {
 	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.8);
 	background-color: rgb(128, 128, 128);
 }
+/* 
+#panel::-webkit-scrollbar-corner
+{
+  background-color: #555;
+}
+
+#panel::-webkit-resizer
+{
+  background-color: #333;
+} */
+
 
 @media screen and (max-width: 767px) {
   .sidenav {

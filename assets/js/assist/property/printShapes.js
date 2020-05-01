@@ -299,7 +299,7 @@ const formatShape = name => {
 
   $('#property').parent().prev().text(title);
 
-  switch (name) {
+  switch (name) { 
     case 'rectangle':
       formatRect();
       break;  
