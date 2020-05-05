@@ -2,14 +2,14 @@ var d3plus = {};
 
 d3plus.textwrap = function() {
     
-    var _resize = false;
-    var _wrap = false;
-    var _textElement;
+    var _resize = false;            // Should the text be resized in the container?
+    var _wrap = false;              // Should the text be wrapped in the container?
+    var _textElement;               // Represents the text element that will have the wrapping applied
 
-    var _x
-    var _y;  
-    var _width;
-    var _height;
+    var _x;                         // The offset x-position
+    var _y;                         // The offset y-position
+    var _width;                     // The maximum width that should be afforded for text rendering
+    var _height;                    // The maximum height that should be afforded for text rendering
     var _dy;
 
 
@@ -43,7 +43,7 @@ d3plus.textwrap = function() {
             .attr("top", "0px")
             .attr("x", 0)
             .attr("y", 0)
-            .style("font-size", maxSize + "px")
+            .attr("font-size", maxSize + "px")
             .text(function(d) {
                 return d;
             })
@@ -104,7 +104,7 @@ d3plus.textwrap = function() {
         vars.innerWidth = vars.width - (2 * _padding);
         vars.rotate = _rotate;
 
-        vars.fontSize = parseFloat(vars.element.attr("font-size") || vars.element.style("font-size"), 10);
+        vars.fontSize = parseFloat(vars.element.attr("font-size") || vars.element.attr("font-size"), 10);
         vars.container.dy = _dy;
         vars.size = _size || _resize ? [4, 80] : [vars.fontSize / 2, vars.fontSize];
 
@@ -209,7 +209,6 @@ d3plus.textwrap = function() {
 
         vars.element.attr("text-anchor", anchor)
                       .attr("font-size", fontSize + "px")
-                      .style("font-size", fontSize + "px")
                       .attr("x", vars.container.x)
                       .attr("y", vars.container.y);
 
@@ -410,8 +409,9 @@ d3plus.textwrap = function() {
 
             var wordBreak = /[^\s\n]+/g;
             vars.text = vars.element.text();
-
+            //console.log(vars.text)
             vars.words = vars.text.match(wordBreak);
+            //console.log(vars.words)
 
             vars.element.html("");
 

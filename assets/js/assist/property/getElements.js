@@ -59,8 +59,9 @@ const getInput3 = (name, def) => {
   );
 }
 
-const getTextArea = name => {
+const getTextArea = (name, value) => {
   var id = name.replace(/ /g, '');
+  if (!value) value ='';
 
   return (
     `<div class='row' style='margin-top: 12px;'>
@@ -68,7 +69,7 @@ const getTextArea = name => {
         <label for='${id}' style='float: right;'>${name}</label>
       </div>
       <div class='col-sm-8'>
-        <input type='textarea' id='${id}' style='width: 100%; height: 70px' />
+        <input type='textarea' id='${id}' style='width: 100%; height: 70px' value='${value}' />
       </div>
     </div>`
   );
@@ -229,8 +230,8 @@ const getFile = name => {
         <label for='${id}' style='float: right;'>${name}</label>
       </div>
       <div class='col-sm-8'>
-        <input type="file" id="${id}" accept=".png, .jpg, .jpeg, .svg" style='display: none' />
-        <input type="button" style='width: 100%' value="Browse..." onclick="document.getElementById('${id}').click();" />
+        <input type="file" id="${id}" accept=".png, .jpg, .jpeg, .svg" style='display: none' onchange='document.getElementById("${id}_temp").value=this.value'/>
+        <input type="button" id='${id}_temp' style='width: 100%' value="Browse..." onclick="document.getElementById('${id}').click();" />
       </div>
     </div>`
   );
@@ -265,19 +266,29 @@ const removeChildren = parent => {
 
 const syncColorSlider = () => {
   $('.color-slider').each((index, node) => {
-    const color_rgb = $(node).find('input[type=color]');
-    const opacity = $(node).find('input[type=range]');
+    const color_rgb = $(node).find('input[type=color]').val();
+    const opacity = $(node).find('input[type=range]').val();
     const color_rgba = $(node).find('input[type=text]');
 
-    $(color_rgba).val('rgba(' + parseInt($(color_rgb).val().slice(-6, -4), 16) + ',' + parseInt($(color_rgb).val().slice(-4, -2), 16) + ',' + parseInt($(color_rgb).val().slice(-2), 16) + ',' + $(opacity).val() + ')');
+    $(color_rgba).val(color_rgb + rgbToHex(parseInt(opacity)));
 
 
     $(color_rgb).change(function() {
-      $(color_rgba).val('rgba(' + parseInt($(color_rgb).val().slice(-6, -4), 16) + ',' + parseInt($(color_rgb).val().slice(-4, -2), 16) + ',' + parseInt($(color_rgb).val().slice(-2), 16) + ',' + $(opacity).val() + ')');
+      $(color_rgba).val(color_rgb + rgbToHex(parseInt(opacity)));
     });
 
     $(opacity).change(function() {
-      $(color_rgba).val('rgba(' + parseInt($(color_rgb).val().slice(-6, -4), 16) + ',' + parseInt($(color_rgb).val().slice(-4, -2), 16) + ',' + parseInt($(color_rgb).val().slice(-2), 16) + ',' + $(opacity).val() + ')');
+      $(color_rgba).val(color_rgb + rgbToHex(parseInt(opacity)));
     });
   });  
 }
+
+var rgbToHex = function (val) {
+  var rgb = Math.floor(255 * val / 100);
+
+  var hex = Number(rgb).toString(16);
+  if (hex.length < 2) {
+       hex = "0" + hex;
+  }
+  return hex;
+};

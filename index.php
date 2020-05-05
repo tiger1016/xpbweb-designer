@@ -1,3 +1,43 @@
+<?php
+  if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_FILES['files'])) {
+      header('Content-Type: application/json');
+
+      $errors = [];
+
+      $extensions = ['jpg', 'jpeg', 'svg', 'png', 'bmp'];
+      $all_files = count($_FILES['files']['tmp_name']);
+
+      $res_result = array();
+      for ($i = 0; $i < $all_files; $i++) {
+        $file_name = $_FILES['files']['name'][$i];
+        $file_tmp = $_FILES['files']['tmp_name'][$i];
+        $file_size = $_FILES['files']['size'][$i];
+        $tmp = explode('.', $_FILES['files']['name'][$i]);
+        $file_ext = strtolower(end($tmp));
+
+        if (!in_array($file_ext, $extensions)) {
+          $errors = array('error' => 'extension');
+        }
+
+        if ($file_size > 2097152) {
+          $errors = array('error' => 'size');
+        }
+
+        if (empty($errors)) {                  
+          $img = file_get_contents($file_tmp);
+          array_push($res_result, base64_encode($img));
+        }
+      }
+      
+      if ($errors) {
+          echo json_encode($errors);
+      } else {
+          echo json_encode($res_result);
+      }
+    }
+  } else {
+?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -13,12 +53,19 @@
     
     <script src='./assets/js/3rd/d3.js'></script>
     <script src='./assets/js/3rd/d3plus.js'></script>
+    <script src='./assets/js/3rd/bwip-min.js'></script>
+    <script src='./assets/js/3rd/qrious.min.js'></script>
+    <script src='./assets/js/3rd/download.js'></script>
+    <script src='./assets/js/3rd/jsBarcode.all.min.js'></script>
     
     <script src='./assets/js/assist/layout/layout.js'></script>
     <script src='./assets/js/assist/property/getElements.js'></script>
     <script src='./assets/js/assist/property/printShapes.js'></script>
     <script src='./assets/js/assist/property/readShapes.js'></script>
+    <script src='./assets/js/assist/panel/getImage.js'></script>
+    <script src='./assets/js/assist/panel/barcodeGen.js'></script>
     <script src='./assets/js/assist/panel/panel.js'></script>
+    <script src='./assets/js/assist/part/getColor.js'></script>
   </head>
 
   <body>
@@ -76,3 +123,6 @@
   </body>
   <script src='./assets/js/main.js'></script>
 </html>
+<?php
+  }
+?>

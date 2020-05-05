@@ -50,11 +50,11 @@ const formatLine = () => {
   parent.append(getSlider('Z-Order', -100, 100));
   parent.append(getHorizontalLine());
   parent.append(getInput2('Start'));
-  parent.append(getInput2('End'));
+  parent.append(getInput2('End', [100, 100]));
   parent.append(getHorizontalLine());
 
   parent.append(getSelect('Style', style));
-  parent.append(getSlider('Thickness', 0, 30));
+  parent.append(getSlider('Thickness', 0, 30, 4));
   parent.append(getHorizontalLine());
   
   var colorStyle = ['SolidColor', 'LinearGradientColor', 'RadialGradientColor'];
@@ -74,7 +74,7 @@ const formatRect = () => {
   parent.append(getSlider('Z-Order', -100, 100));
   parent.append(getHorizontalLine());
   parent.append(getInput2('Location'));
-  parent.append(getInput2('Size'));
+  parent.append(getInput2('Size', [200, 100]));
   parent.append(getInput3('Rotation'));
   parent.append(getHorizontalLine());
 
@@ -100,7 +100,7 @@ const formatEllipse = () => {
   parent.append(getSlider('Z-Order', -100, 100));
   parent.append(getHorizontalLine());
   parent.append(getInput2('Location'));
-  parent.append(getInput2('Size'));
+  parent.append(getInput2('Size', [200, 100]));
   parent.append(getInput3('Rotation'));
   parent.append(getHorizontalLine());
 
@@ -120,7 +120,7 @@ const formatText = () => {
 
   removeChildren(parent);
 
-  parent.append(getTextArea('Designer Text'));
+  parent.append(getTextArea('Designer Text', 'Designer Text'));
   parent.append(getTextArea('Print Text'));
   parent.append(getHorizontalLine());
   parent.append(getInput('Object Name'));
@@ -128,14 +128,14 @@ const formatText = () => {
   parent.append(getSlider('Z-Order', -100, 100));
   parent.append(getHorizontalLine());
   parent.append(getInput2('Location'));
-  parent.append(getInput2('Size'));
+  parent.append(getInput2('Size', [200, 100]));
   parent.append(getInput3('Rotation'));
   parent.append(getHorizontalLine());
 
  
 
   parent.append(getSelect('Font Family', fontFamilly));
-  parent.append(getSpin('Font Size', 12));
+  parent.append(getSpin('Font Size', 19));
 
   var fontStyle = [
     'Normal',
@@ -206,9 +206,9 @@ const formatText = () => {
   parent.append(getSelect('Text Wrapping', textWrap));    
   parent.append(getInput('Line Height', 0));
 
-  parent.append(getSelect2('Fill', colorStyle, 0, '#ffffff'));
+  parent.append(getSelect2('Fill', colorStyle, 0, '#ffffff', 0));
   parent.append(getSelect2('Outline', colorStyle, 0, '#000000'));
-  parent.append(getCheck('Show Border'));
+  parent.append(getCheck('Show Border', false));
 
   syncSlider();
   syncColorSlider();  
@@ -224,7 +224,7 @@ const formatPicture = () => {
   parent.append(getSlider('Z-Order', -100, 100));
   parent.append(getHorizontalLine());
   parent.append(getInput2('Location'));
-  parent.append(getInput2('Size'));
+  parent.append(getInput2('Size', [200, 100]));
   parent.append(getInput3('Rotation'));
   parent.append(getHorizontalLine());
 
@@ -255,7 +255,7 @@ const formatBarcode = () => {
   parent.append(getSlider('Z-Order', -100, 100));
   parent.append(getHorizontalLine());
   parent.append(getInput2('Location'));
-  parent.append(getInput2('Size'));
+  parent.append(getInput2('Size', [200, 100]));
   parent.append(getInput3('Rotation'));
   parent.append(getHorizontalLine());
 
@@ -281,13 +281,13 @@ const formatBarcode = () => {
     'Uniform',
     'UniformToFill',
   ];
-  parent.append(getSpin('Stretch'));
-  parent.append(getTextArea('Design Data'));
+  parent.append(getSelect('Stretch', stretch, 2));
+  parent.append(getTextArea('Design Data', '123456789'));
   parent.append(getTextArea('Data'));
   parent.append(getHorizontalLine());
 
-  parent.append(getSelect2('Fill', colorStyle, 0, '#ffffff'));
-  parent.append(getSelect2('Outline', colorStyle, 0, '#000000'));
+  // parent.append(getSelect2('Fill', colorStyle, 0, '#ffffff'));
+  // parent.append(getSelect2('Outline', colorStyle, 0, '#000000'));
 
   syncSlider();
   syncColorSlider();
