@@ -1,11 +1,31 @@
 const layers = [];
 var activeLayer = null;
-var present_panel= null;
 var svgDom = null;
+var fonts = [];
 
 const init = () => {
   // when 'panel' click
-  $('#panel').click(formatPanel);
+  $('#panel').click(function(e) {
+    if (e.target.tagName.toLowerCase() === 'div' || e.target.tagName.toLowerCase() === 'svg') {
+      $('#selected').remove();
+
+      layers.forEach(layer => {
+        if (layer.layerName === 'panel') activeLayer = layer;
+      });
+
+      formatPanel(activeLayer ? activeLayer.data : null);
+    } else {
+      var tag = $(e.target);
+      var id = tag.attr('id');
+
+      while(!id) {
+        tag = tag.parent();
+        id = tag.attr('id');
+      }
+
+      setActiveLayer(id);
+    }
+  });
 
   // when 'toolbox' click
   var clicked_bn = [];
@@ -17,6 +37,7 @@ const init = () => {
       timer1 = setTimeout(() => {
         if (clicked_bn.length === 2 && clicked_bn[0] === clicked_bn[1]) {
           clearTimeout(timer1);
+          activeLayer = null;
           createTool(clicked_bn[0]);
         } else {
           console.log('one click');
@@ -27,53 +48,38 @@ const init = () => {
 
     }
   });
-  
-  //init - test
-  createPanel();
-}
 
-const createTool = id => {
-  var name = id.slice(3);
-
-  var layerName = layout(name);
-  
-  formatShape(name);
-
-  var data = readShape(name);
-  activeLayer = {
-    layerName,
-    data,
-  };
-  
-  if (!layers.length) {
-    initPanel();
-  }
-
-  layers.push(activeLayer);
-
-  panel(activeLayer);
-}
-
-const createPanel = () => {
-  const panel = $('#panel');
-  panel.addClass('screen');
-  panel.trigger('click');
-
-  const toolbox = $('#toolbox');
-  toolbox.append(
-    ` <button class="drawing-tool svg-rect" id='bn-rectangle'></button>
-      <button class="drawing-tool svg-line" id='bn-line'></button>
-      <button class="drawing-tool svg-ellipse" id='bn-ellipse'></button>
-      <button class="drawing-tool svg-picture" id='bn-picture'></button>
-      <button class="drawing-tool svg-barcode" id='bn-barcode'></button>
-      <button class="drawing-tool svg-text" id='bn-text'></button>`
-  );
-
-  toolbox.css('padding-top', '7px');
-  toolbox.css('padding-bottom', '7px');
-
-  panel.trigger('click');
-  present_panel = readPanel();
+  $('body').keydown(e => {
+    if (activeLayer) {
+      if (activeLayer.layerName !== 'panel') {
+        switch (e.key) {
+          case 'Escape':
+            $('#selected').remove();
+            activeLayer = null;
+            break;
+          case 'Delete':
+            const index = layers.indexOf(activeLayer);
+            layers.splice(index, 1);          
+            $('#' + activeLayer.layerName).remove();
+            $('#selected').remove();
+            activeLayer = null;
+            break;
+          case 'ArrowRight':
+            move(10, 0);
+            break;
+          case 'ArrowLeft':
+            move(-10, 0);
+            break;
+          case 'ArrowDown':
+            move(0, 10);
+            break;
+          case 'ArrowUp':
+            move(0, -10);
+            break;
+        }
+      } 
+    }
+  })
 }
 
 init();

@@ -79,6 +79,8 @@ const getSelect = (name, value, defSel) => {
   var id = name.replace(/ /g, '');
   id = id.replace(/\./g, '');
 
+  if (!defSel) defSel = 0;
+
   return (
     `<div class='row' style='margin-top: 12px;'>
       <div class='col-sm-4'>
@@ -94,7 +96,7 @@ const getSelect = (name, value, defSel) => {
                 );
               } else {
                 return (
-                  `<option ${index === defSel ? 'selected' : ''} value=${element.value}>${element.name}</option>`
+                  `<option ${index === defSel ? 'selected' : ''} value="${element.value}">${element.name}</option>`
                 );
               }
             })
@@ -105,10 +107,12 @@ const getSelect = (name, value, defSel) => {
   );
 }
 
-const getSelect2 = (name, value, defSel, defCol, defOpa) => {
+const getSelect2 = (name, value, defSel, defCol) => {
   var id = name.replace(/ /g, '');
-  defCol = defCol ? defCol : '#ffffff';
-  defOpa = defOpa || defOpa  === 0 ? defOpa : 100;
+  defSel = defSel ? defSel : 0;
+  defCol = defCol ? defCol : '#ffffff #ffffff ff 00 0 100';
+
+  var cols = defCol.split(' ');
 
   return (
     `<div class='row color-slider' style='margin-top: 12px;'>
@@ -133,10 +137,18 @@ const getSelect2 = (name, value, defSel, defCol, defOpa) => {
         </select>
       </div>
       <div class='col-offset-sm-4 col-sm-2' style='margin-top: 8px'>
-        <input type='color' id='${id}_color' style='width: 100%' value='${defCol}' />
+        <input type='color' id='${id}_color' style='width: 100%' value='${cols[0]}' />
       </div>
       <div class='col-sm-6' style='margin-top: 8px'>
-        <input type='range' id='${id}_opacity' style='width: 100%' min='0' max='100' value='${defOpa}' />
+        <input type='range' id='${id}_opacity' style='width: 100%' min='0' max='100' value='${parseInt(cols[2], 16) * 100 / 255}' />
+        <input id="${id}_x1" type="number" value="${cols[4]}" min="0" max="100" ${!defSel ? 'hidden' : 'none'}/>
+      </div>     
+      <div class='col-offset-sm-4 col-sm-2' style='margin-top: 8px' ${!defSel ? 'hidden' : 'none'}>
+        <input type='color' id='${id}_color_stop' style='width: 100%' value='${cols[1]}' />
+      </div>
+      <div class='col-sm-6' style='margin-top: 8px' ${!defSel ? 'hidden' : 'none'}>
+        <input type='range' id='${id}_opacity_stop' style='width: 100%' min='0' max='100' value='${parseInt(cols[3], 16) * 100 / 255}' />
+        <input id="${id}_x2" type="number" value="${cols[5]}" min="0" max="100" />
       </div>
       <input type='text' id='${id}' style='width: 100%' hidden/>
     </div>`
@@ -152,7 +164,7 @@ const getCheck = (name, def) => {
         <label for='${id}' style='float: right;'>${name}</label>
       </div>
       <div class='col-sm-8'>
-        <input id="${id}" class="slider" type="checkbox" ${ def === true ? 'checked' : '' } />
+        <input id="${id}" class="slider" type="checkbox" ${ def ? 'checked' : '' } />
       </div>
     </div>`
   );  
@@ -177,7 +189,7 @@ const getSlider = (name, min, max, pos) => {
   );
 }
 
-const getSpin = (name, def) => {
+const getSpin = (name, def, min) => {
   var id = name.replace(/ /g, '');
   var pos = def || def === 0 ? def : 1;
 
@@ -187,7 +199,7 @@ const getSpin = (name, def) => {
         <label for='${id}' style='float: right;'>${name}</label>
       </div>
       <div class='col-sm-8'>
-        <input id="${id}" type="number" value="${pos}" min="${def}" max="999" style='width: 100%'/>
+        <input id="${id}" type="number" value="${pos}" min="${min}" max="999" style='width: 100%'/>
       </div>
     </div>`
   );
@@ -201,9 +213,10 @@ const getHorizontalLine = () => {
   );
 }
 
-const getColor = (name, def) => {
+const getColor = (name, defCol) => {
   var id = name.replace(/ /g, '');
-  def = def ? def : "#ffffff";
+  defCol = defCol ? defCol : '#ffffff undefined ff 0';
+  var cols = defCol.split(' ');
 
   return (
     `<div class='row color-slider' style='margin-top: 12px;'>
@@ -211,18 +224,19 @@ const getColor = (name, def) => {
         <label for='${id}' style='float: right;'>${name}</label>
       </div>
       <div class='col-sm-2'>
-        <input id="${id}_color" type="color" value="${def}" style='width: 100%'/>
+        <input id="${id}_color" type="color" value="${cols[0]}" style='width: 100%'/>
       </div>
       <div class='col-sm-6'>
-        <input id="${id}_opacity" type="range" min='0', max='100' value='100' style='width: 100%'/>
+        <input id="${id}_opacity" type="range" min='0', max='100' value='${parseInt(cols[2], 16) * 100 / 255}' style='width: 100%'/>
       </div>
       <input type='text' id='${id}' hidden/>
     </div>`
   );
 }
 
-const getFile = name => {
+const getFile = (name, def)=> {
   var id = name.replace(/ /g, '');
+  if (!def) def = 'Browse...';
 
   return (
     `<div class='row' style='margin-top: 12px;'>
@@ -231,7 +245,7 @@ const getFile = name => {
       </div>
       <div class='col-sm-8'>
         <input type="file" id="${id}" accept=".png, .jpg, .jpeg, .svg" style='display: none' onchange='document.getElementById("${id}_temp").value=this.value'/>
-        <input type="button" id='${id}_temp' style='width: 100%' value="Browse..." onclick="document.getElementById('${id}').click();" />
+        <input type="button" id='${id}_temp' style='width: 100%' value="${def}" onclick="document.getElementById('${id}').click();" />
       </div>
     </div>`
   );
@@ -264,23 +278,66 @@ const removeChildren = parent => {
   }
 }
 
-const syncColorSlider = () => {
+const syncColorSlider = () => {  
   $('.color-slider').each((index, node) => {
-    const color_rgb = $(node).find('input[type=color]').val();
-    const opacity = $(node).find('input[type=range]').val();
     const color_rgba = $(node).find('input[type=text]');
+    var id = color_rgba.attr('id');
 
-    $(color_rgba).val(color_rgb + rgbToHex(parseInt(opacity)));
+    const color_rgb1 = $(node).find('#' + id + '_color');
+    const color_rgb2 = $(node).find('#' + id + '_color_stop');
+    const opacity1 = $(node).find('#' + id + '_opacity');
+    const opacity2 = $(node).find('#' + id + '_opacity_stop');
+    const x1 = $(node).find('#' + id + '_x1');
+    const x2 = $(node).find('#' + id + '_x2');
+
+    const f = () => {
+      $(color_rgba).val(color_rgb1.val() + ' ' + color_rgb2.val() + ' ' + rgbToHex(parseInt(opacity1.val())) + ' ' + rgbToHex(parseInt(opacity2.val())) + ' ' + x1.val() + " " + x2.val());
+
+      $(color_rgb1).change(function() {
+        $(color_rgba).val(color_rgb1.val() + ' ' + color_rgb2.val() + ' ' + rgbToHex(parseInt(opacity1.val())) + ' ' + rgbToHex(parseInt(opacity2.val())) + ' ' + x1.val() + " " + x2.val());
+      });
+  
+      $(color_rgb2).change(function() {
+        $(color_rgba).val(color_rgb1.val() + ' ' + color_rgb2.val() + ' ' + rgbToHex(parseInt(opacity1.val())) + ' ' + rgbToHex(parseInt(opacity2.val())) + ' ' + x1.val() + " " + x2.val());
+      });
+  
+      $(opacity1).change(function() {
+        $(color_rgba).val(color_rgb1.val() + ' ' + color_rgb2.val() + ' ' + rgbToHex(parseInt(opacity1.val())) + ' ' + rgbToHex(parseInt(opacity2.val())) + ' ' + x1.val() + " " + x2.val());
+      });
+      
+      $(opacity2).change(function() {
+        $(color_rgba).val(color_rgb1.val() + ' ' + color_rgb2.val() + ' ' + rgbToHex(parseInt(opacity1.val())) + ' ' + rgbToHex(parseInt(opacity2.val())) + ' ' + x1.val() + " " + x2.val());
+      });
+  
+      $(x1).change(function() {
+        $(color_rgba).val(color_rgb1.val() + ' ' + color_rgb2.val() + ' ' + rgbToHex(parseInt(opacity1.val())) + ' ' + rgbToHex(parseInt(opacity2.val())) + ' ' + x1.val() + " " + x2.val());
+      });
+  
+      $(x2).change(function() {
+        $(color_rgba).val(color_rgb1.val() + ' ' + color_rgb2.val() + ' ' + rgbToHex(parseInt(opacity1.val())) + ' ' + rgbToHex(parseInt(opacity2.val())) + ' ' + x1.val() + " " + x2.val());
+      });
+    }
 
 
-    $(color_rgb).change(function() {
-      $(color_rgba).val(color_rgb + rgbToHex(parseInt(opacity)));
-    });
+    $(node).find('select').change(function() {
+      var select = $(this).val();
+      var pos = colorStyle.indexOf(select);
 
-    $(opacity).change(function() {
-      $(color_rgba).val(color_rgb + rgbToHex(parseInt(opacity)));
-    });
-  });  
+      if (pos) {
+        x1.show();
+        x2.parent().show();
+        color_rgb2.parent().show();
+      } else {
+        x1.hide();
+        x2.parent().hide();
+        color_rgb2.parent().hide();
+      }
+
+      f();      
+    })
+
+    f();
+  });
 }
 
 var rgbToHex = function (val) {

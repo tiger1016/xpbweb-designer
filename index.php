@@ -66,6 +66,9 @@
     <script src='./assets/js/assist/panel/barcodeGen.js'></script>
     <script src='./assets/js/assist/panel/panel.js'></script>
     <script src='./assets/js/assist/part/getColor.js'></script>
+    <script src='./assets/js/assist/activity/index.js'></script>
+    <script src='./assets/js/assist/activity/action_panel.js'></script>
+    <script src='./assets/js/assist/activity/action_property.js'></script>
   </head>
 
   <body>
@@ -86,39 +89,47 @@
 
     <div class="container-fluid text-left">
       <div class="row content">
-          <div class="col-sm-2 sidenav TA" id='Scrollstyle1'>
+          <div class="col-sm-4 sidenav TA" id='Scrollstyle1'>
             <div class="panel panel-primary">
               <div class="panel-heading">Tool Box</div>
               <div class="panel-body" id='toolbox'>
               </div>
             </div>
 
-            <div class="panel panel-primary">
+            <!-- <div class="panel panel-primary">
               <div class="panel-heading">Layouts</div>
               <div class="panel-body">
                 <div class='container-fluid' id='layout'></div>
               </div>
-            </div>
+            </div> -->
+
+            <div class="panel panel-primary">
+              <div class="panel-heading">Properties</div>
+              <div class="panel-body">
+                <div class='container-fluid' id='property'></div>
+              </div>
+            </div> 
+
           </div>
 
           <div class="col-sm-6 text-left"> 
             <div id='panel'></div>
           </div> 
 
-          <div class="col-sm-4 sidenav TA" id='Scrollstyle2' style='background-color: rgba(255,255,255,0)'> 
+          <!-- <div class="col-sm-4 sidenav TA" id='Scrollstyle2' style='background-color: rgba(255,255,255,0)'> 
             <div class="panel panel-primary">
               <div class="panel-heading">Properties</div>
               <div class="panel-body">
                 <div class='container-fluid' id='property'></div>
               </div>
             </div>
-          </div>  
+          </div>   -->
       </div>
     </div>
 
-    <footer class="container-fluid text-center">
+    <!-- <footer class="container-fluid text-center">
       <p>by DAVID</p>
-    </footer>
+    </footer> -->
 
   </body>
   <script src='./assets/js/main.js'></script>

@@ -64,7 +64,7 @@ const readEllipse = () => {
   return prop;
 }
 
-const readPicture = () => {
+const readPicture = async () => {
   var prop = {};
   const property = $('#property');
 
@@ -87,13 +87,26 @@ const readPicture = () => {
     y: parseFloat(property.find('#Rotation_y').val())
   };
 
-  const file = property.find('#DesignerSource')[0].files[0];
-  prop['DesignerSource'] = file ? file.name : null;
   prop['Source'] = property.find('#Source').val();
   prop['TransparencyColor'] = property.find('#TransparencyColor').val();
   prop['TransparencyTolerance'] = property.find('#TransparencyTolerance_text').val();
   prop['Stretch'] = property.find("#Stretch").val();
 
+  const file = property.find('#DesignerSource')[0].files[0];
+
+  if (file) {
+    const formdata = new FormData();
+
+    formdata.append('files[]', file, file ? file.name : 'null');  
+
+    const data = await (await fetch('index.php', {
+        method: 'POST',
+        body: formdata
+    })).json();
+
+    prop['DesignerSource'] = [property.find('#DesignerSource')[0].value, data[0]];
+  }
+  
   return prop;
 }
 
@@ -181,7 +194,7 @@ const readText = () => {
     Style: property.find('#Outline_sel').val(),
     Color: property.find('#Outline').val()
   };
-  prop['ShowBorder'] = property.find('#ShowBorder').val();
+  prop['ShowBorder'] = property.find('#ShowBorder').is(':checked');
 
   return prop;
 }
@@ -190,8 +203,8 @@ const readPanel = () => {
   var prop = {};
   const property = $('#property');
 
-  prop['Width'] = parseFloat(property.find('#Width').val()) - 15;
-  prop['Height'] = parseFloat(property.find('#Height').val()) - 15;
+  prop['Width'] = parseFloat(property.find('#Width').val());
+  prop['Height'] = parseFloat(property.find('#Height').val());
   prop['Opacity'] = parseInt(property.find('#Opacity_text').val());
   prop['DefaultFont'] = property.find("#DefaultFont").val();
   prop['DefaultFontSize'] = parseInt(property.find("#DefaultFontSize").val());
@@ -200,18 +213,19 @@ const readPanel = () => {
 }
 
 
-const readShape = name => {
+const readShape = async name => {
   switch (name) {
     case 'line':
       return readLine();
     case 'rectangle':
       var prop = readEllipse();
-      prop['Corner Radius'] = parseInt($('#property').find('#CornerRadius').val());
+      prop['CornerRadius'] = parseInt($('#property').find('#CornerRadius').val());
       return prop;
     case 'ellipse':
       return readEllipse();
     case 'picture':
-      return readPicture();
+      var prop = await readPicture();
+      return prop;
     case 'barcode':
       return readBarcode();
     case 'text':

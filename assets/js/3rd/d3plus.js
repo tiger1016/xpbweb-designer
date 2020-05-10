@@ -409,7 +409,7 @@ d3plus.textwrap = function() {
 
             var wordBreak = /[^\s\n]+/g;
             vars.text = vars.element.text();
-            //console.log(vars.text)
+            // console.log(container)
             vars.words = vars.text.match(wordBreak);
             //console.log(vars.words)
 

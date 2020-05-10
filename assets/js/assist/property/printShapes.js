@@ -1,4 +1,4 @@
-const fontFamilly = [
+const fontFamily = [
   'Arial', 'Bahnschrift', 'Cambria', 'Cambria Math', 'Candara', 
   'Comic Sans MS', 'Consolas', 'Constantia', 'Corbel', 'Courier New', 
   'Ebrima', 'Franklin Gothic', 'Gabriola', 'Gadugi', 'Georgia', 'Gulim', 
@@ -20,135 +20,155 @@ const fontFamilly = [
 ];
 
 
-const style = [12,2,4,5,4,64,6,3,63,3];
+const style = [
+  { name: 'Line1', value: '0' },
+  { name: 'Line2', value: '4' },
+  { name: 'Line3', value: '4 1' },
+  { name: 'Line4', value: '4 1 2' },
+  { name: 'Line5', value: '4 1 2 3' },
+];
 const colorStyle = ['SolidColor', 'LinearGradientColor', 'RadialGradientColor'];
 
 
-const formatPanel = () => {
+const formatPanel = data => {
   const parent = $('#property');
   $('#property').parent().prev().text('Panel Properties');
 
   const panel = $('#panel');
 
-
   removeChildren(parent);
 
-  parent.append(getInput('Width', panel.width()));  
-  parent.append(getInput('Height', panel.height()));
-  parent.append(getSlider('Opacity', 0, 100, 100));
-  parent.append(getSelect('Default Font', fontFamilly));
-  parent.append(getInput('Default Font Size', 12));
+  parent.append(getInput('Width', data ? data.Width : panel.width() - 15));  
+  parent.append(getInput('Height', data ? data.Height : panel.height() - 15));
+  parent.append(getSlider('Opacity', 0, 100, data ? data.Opacity : 100));
+  parent.append(getSelect('Default Font', fontFamily, data ? fontFamily.indexOf(data.DefaultFont) : 'Calibri'));
+  parent.append(getInput('Default Font Size', data ? data.DefaultFontSize : 12));
+
+  syncSlider();
 }
 
-const formatLine = () => {
+const formatLine = data => {
   const parent = $('#property');
-
   removeChildren(parent);
 
-  parent.append(getInput('Object Name'));
-  parent.append(getSlider('Opacity', 0, 100, 100));
-  parent.append(getSlider('Z-Order', -100, 100));
-  parent.append(getHorizontalLine());
-  parent.append(getInput2('Start'));
-  parent.append(getInput2('End', [100, 100]));
-  parent.append(getHorizontalLine());
+  parent.append(getInput('Object Name', data ? data.ObjectName : ''));
+  parent.append(getSlider('Opacity', 0, 100, data ? data.Opacity : 100));
+  parent.append(getSlider('Z-Order', -100, 100, data ? data['Z-Order'] : null));
+  // parent.append(getHorizontalLine());
+  parent.append(getInput2('Start', data ? [data.Start.x, data.Start.y] : [0, 0]));
+  parent.append(getInput2('End', data ? [data.End.x, data.End.y] : [200, 200]));
+  // parent.append(getHorizontalLine());
 
-  parent.append(getSelect('Style', style));
-  parent.append(getSlider('Thickness', 0, 30, 4));
-  parent.append(getHorizontalLine());
+  var style_sel = null;
+  if (data) {
+    style.map((item, index) => {
+      if (item.value === data.Style) style_sel = index;
+    })
+  }
+
+
+  parent.append(getSelect('Style', style, style_sel));
+  parent.append(getSlider('Thickness', 0, 30, data ? data.Thickness : 2));
+  // parent.append(getHorizontalLine());
   
-  var colorStyle = ['SolidColor', 'LinearGradientColor', 'RadialGradientColor'];
-  parent.append(getSelect2('Stroke', colorStyle, 0, '#000000'));
+  parent.append(getSelect2('Stroke', colorStyle, data ? colorStyle.indexOf(data.Stroke.Style) : 0, data ? data.Stroke.Color : '#000000 #ffffff ff 00 0 100'));
 
   syncSlider();
   syncColorSlider();
 }
 
-const formatRect = () => {
+const formatRect = data => {
   const parent = $('#property');
-
   removeChildren(parent);
 
-  parent.append(getInput('Object Name'));
-  parent.append(getSlider('Opacity', 0 , 100));
-  parent.append(getSlider('Z-Order', -100, 100));
-  parent.append(getHorizontalLine());
-  parent.append(getInput2('Location'));
-  parent.append(getInput2('Size', [200, 100]));
-  parent.append(getInput3('Rotation'));
-  parent.append(getHorizontalLine());
+  parent.append(getInput('Object Name', data ? data.ObjectName : ''));
+  parent.append(getSlider('Opacity', 0 , 100, data ? data.Opacity : 100));
+  parent.append(getSlider('Z-Order', -100, 100, data ? data['Z-Order'] : null));
+  // parent.append(getHorizontalLine());
+  parent.append(getInput2('Location', data ? [data.Location.x, data.Location.y] : [0, 0]));
+  parent.append(getInput2('Size', data ? [data.Size.width, data.Size.height] : [200, 100]));
+  parent.append(getInput3('Rotation', data ? [data.Rotation.a, data.Rotation.x, data.Rotation.y] : null));
+  // parent.append(getHorizontalLine());
 
-  parent.append(getSelect('Border Style', style));
-  parent.append(getSpin('Border Thickness'));
-  parent.append(getSpin('Corner Radius', 0));
-  parent.append(getHorizontalLine());
+  var style_sel = null;
+  if (data) {
+    style.map((item, index) => {
+      if (item.value === data.BorderStyle) style_sel = index;
+    })
+  }
 
-  parent.append(getSelect2('Fill', colorStyle, 0, '#ffffff'));
-  parent.append(getSelect2('Outline', colorStyle, 0, '#000000'));
+  parent.append(getSelect('Border Style', style, style_sel));
+  parent.append(getSpin('Border Thickness', data ? data.BorderThickness : null, 1));
+  parent.append(getSpin('Corner Radius', data ? data.CornerRadius : 0, 0));
+  // parent.append(getHorizontalLine());
+
+  parent.append(getSelect2('Fill', colorStyle, data ? colorStyle.indexOf(data.Fill.Style) : 0, data ? data.Fill.Color : '#ffffff #ffffff 00 00 0 100'));
+  parent.append(getSelect2('Outline', colorStyle, data ? colorStyle.indexOf(data.Outline.Style) : 0, data ? data.Outline.Color : '#000000 #ffffff ff 00 0 100'));
 
   syncSlider();
   syncColorSlider();
 }
 
-const formatEllipse = () => {
+const formatEllipse = data => {
   const parent = $('#property');
-
   removeChildren(parent);
 
-  parent.append(getInput('Object Name'));
-  parent.append(getSlider('Opacity', 0 , 100));
-  parent.append(getSlider('Z-Order', -100, 100));
-  parent.append(getHorizontalLine());
-  parent.append(getInput2('Location'));
-  parent.append(getInput2('Size', [200, 100]));
-  parent.append(getInput3('Rotation'));
-  parent.append(getHorizontalLine());
+  parent.append(getInput('Object Name', data ? data.ObjectName : ''));
+  parent.append(getSlider('Opacity', 0 , 100, data ? data.Opacity : 100));
+  parent.append(getSlider('Z-Order', -100, 100, data ? data['Z-Order'] : null));
+  // parent.append(getHorizontalLine());
+  parent.append(getInput2('Location', data ? [data.Location.x, data.Location.y] : [0, 0]));
+  parent.append(getInput2('Size', data ? [data.Size.width, data.Size.height] : [200, 100]));
+  parent.append(getInput3('Rotation', data ? [data.Rotation.a, data.Rotation.x, data.Rotation.y] : null));
+  
+  var style_sel = null;
+  if (data) {
+    style.map((item, index) => {
+      if (item.value === data.BorderStyle) style_sel = index;
+    })
+  }
 
-  parent.append(getSelect('Border Style', style));
-  parent.append(getSpin('Border Thickness'));
-  parent.append(getHorizontalLine());
+  parent.append(getSelect('Border Style', style, style_sel));
+  parent.append(getSpin('Border Thickness', data ? data.BorderThickness : null, 1));
 
-  parent.append(getSelect2('Fill', colorStyle, 0, '#ffffff'));
-  parent.append(getSelect2('Outline', colorStyle, 0, '#000000'));
+  parent.append(getSelect2('Fill', colorStyle, data ? colorStyle.indexOf(data.Fill.Style) : 0, data ? data.Fill.Color : '#ffffff #ffffff 00 00 0 100'));
+  parent.append(getSelect2('Outline', colorStyle, data ? colorStyle.indexOf(data.Outline.Style) : 0, data ? data.Outline.Color : '#000000 #ffffff ff 00 0 100'));
 
   syncSlider();
   syncColorSlider();
 }
 
-const formatText = () => {  
+const formatText = data => {  
   const parent = $('#property');
-
   removeChildren(parent);
 
-  parent.append(getTextArea('Designer Text', 'Designer Text'));
-  parent.append(getTextArea('Print Text'));
-  parent.append(getHorizontalLine());
-  parent.append(getInput('Object Name'));
-  parent.append(getSlider('Opacity', 0 , 100));
-  parent.append(getSlider('Z-Order', -100, 100));
-  parent.append(getHorizontalLine());
-  parent.append(getInput2('Location'));
-  parent.append(getInput2('Size', [200, 100]));
-  parent.append(getInput3('Rotation'));
-  parent.append(getHorizontalLine());
+  parent.append(getInput('Object Name', data ? data.ObjectName : ''));
+  parent.append(getSlider('Opacity', 0 , 100, data ? parseFloat(data.Opacity) : 100));
+  parent.append(getSlider('Z-Order', -100, 100, data ? data['Z-Order'] : null));
+  // parent.append(getHorizontalLine());
+  parent.append(getInput2('Location', data ? [data.Location.x, data.Location.y] : [0, 0]));
+  parent.append(getInput2('Size', data ? [data.Size.width, data.Size.height] : [200, 100]));
+  parent.append(getInput3('Rotation', data ? [data.Rotation.a, data.Rotation.x, data.Rotation.y] : null));
 
- 
-
-  parent.append(getSelect('Font Family', fontFamilly));
-  parent.append(getSpin('Font Size', 19));
+  parent.append(getTextArea('Designer Text', data ? data.DesignerText : 'Designer Text'));
+  parent.append(getTextArea('Print Text', data ? data.PrintText : ''));
+  // parent.append(getHorizontalLine());
+    
+  parent.append(getSelect('Font Family', fontFamily, data ? fontFamily.indexOf(data.FontFamily) : null));
+  parent.append(getSpin('Font Size', data ? data.FontSize : 19, 1));
 
   var fontStyle = [
     'Normal',
     'Italic',
     'Oblique',
   ];
-
-  parent.append(getSelect('Font Style', fontStyle));
+  
+  parent.append(getSelect('Font Style', fontStyle, data ? fontStyle.indexOf(data.FontStyle) : null));
 
   var fontWeight = [
     { name: 'extrabold', value: 800 },
     { name: 'extralight', value: 200 },
-    { naem: 'black', value: 900 },
+    { name: 'black', value: 900 },
     { name: 'light', value: 300 },
     { name: 'medium', value: 500 },
     { name: 'normal', value: 400 },
@@ -156,9 +176,17 @@ const formatText = () => {
     { name: 'thin', value: 100},
     { name: 'bold', value: 700 }
   ];
-  parent.append(getSelect('Font Weight', fontWeight, 5));
 
-  var fontStretch = [      
+  var weight_sel = null;
+  if (data) {
+    fontWeight.map((item, index) => {
+      if (item.value === parseInt(data.FontWeight)) weight_sel = index;
+    })
+  }
+
+  parent.append(getSelect('Font Weight', fontWeight, weight_sel ? weight_sel : 5));
+
+  var fontStretch = [
     'ultra-condensed',
     'extra-condensed',
     'condensed',
@@ -169,7 +197,7 @@ const formatText = () => {
     'extra-expanded',
     'ultra-expanded',                   
   ];
-  parent.append(getSelect('Font Stretch', fontStretch, 4));
+  parent.append(getSelect('Font Stretch', fontStretch, data ? data.FontStretch : 4));
 
 
   var textDecoration = [
@@ -179,8 +207,8 @@ const formatText = () => {
     'StrikeThrough'
   ];
 
-  parent.append(getSelect('Text Decoration', textDecoration));
-  parent.append(getHorizontalLine());
+  parent.append(getSelect('Text Decoration', textDecoration, data ? textDecoration.indexOf(data.TextDecoration) : null));
+  // parent.append(getHorizontalLine());
 
   var hAlignment = [
     'Left',
@@ -188,7 +216,7 @@ const formatText = () => {
     'Right',
   ];   
 
-  parent.append(getSelect('H. Alignment', hAlignment, 1));
+  parent.append(getSelect('H. Alignment', hAlignment, data ? hAlignment.indexOf(data.HAlignment) : 1));
 
   var vAlignment = [
     'Top',
@@ -196,42 +224,41 @@ const formatText = () => {
     'Bottom',
   ];
 
-  parent.append(getSelect('V. Alignment', vAlignment, 1));
+  parent.append(getSelect('V. Alignment', vAlignment, data ? vAlignment.indexOf(data.VAlignment) : 1));
 
   var textWrap = [
     'Fixed',
     'Resize',
   ];
 
-  parent.append(getSelect('Text Wrapping', textWrap));    
-  parent.append(getInput('Line Height', 0));
+  parent.append(getSelect('Text Wrapping', textWrap, data ? textWrap.indexOf(data.TextWrapping) : null));    
+  parent.append(getInput('Line Height', data ? data.LineHeight : 0));
 
-  parent.append(getSelect2('Fill', colorStyle, 0, '#ffffff', 0));
-  parent.append(getSelect2('Outline', colorStyle, 0, '#000000'));
-  parent.append(getCheck('Show Border', false));
-
+  parent.append(getSelect2('Fill', colorStyle, data ? colorStyle.indexOf(data.Fill.Style) : 0, data ? data.Fill.Color : '#ffffff #ffffff 00 00 0 100'));
+  parent.append(getSelect2('Outline', colorStyle, data ? colorStyle.indexOf(data.Outline.Style) : 0, data ? data.Outline.Color : '#000000 #ffffff ff 00 0 100'));
+  parent.append(getCheck('Show Border', data ? data.ShowBorder : false));
+  
   syncSlider();
   syncColorSlider();  
 }
 
-const formatPicture = () => {
+const formatPicture = data => {
   const parent = $('#property');
-
   removeChildren(parent);
 
-  parent.append(getInput('Object Name'));
-  parent.append(getSlider('Opacity', 0 , 100));
-  parent.append(getSlider('Z-Order', -100, 100));
-  parent.append(getHorizontalLine());
-  parent.append(getInput2('Location'));
-  parent.append(getInput2('Size', [200, 100]));
-  parent.append(getInput3('Rotation'));
-  parent.append(getHorizontalLine());
+  parent.append(getInput('Object Name', data ? data.ObjectName : ''));
+  parent.append(getSlider('Opacity', 0 , 100, data ? data.Opacity : 100));
+  parent.append(getSlider('Z-Order', -100, 100, data ? data['Z-Order'] : null));
+  // parent.append(getHorizontalLine());
+  parent.append(getInput2('Location', data ? [data.Location.x, data.Location.y] : [0, 0]));
+  parent.append(getInput2('Size', data ? [data.Size.width, data.Size.height] : [200, 100]));
+  parent.append(getInput3('Rotation', data ? [data.Rotation.a, data.Rotation.x, data.Rotation.y] : null));
 
-  parent.append(getFile("Designer Source"));
-  parent.append(getTextArea('Source'));
-  parent.append(getColor('Transparency Color', '#ffffff'));
-  parent.append(getSlider('Transparency Tolerance', 0, 100, 0));
+  parent.append(getFile("Designer Source", data ? data.DesignerSource[0] : null));
+  parent.append(getTextArea('Source', data ? data.Source : ''));
+
+  parent.append(getColor('Transparency Color', data ? data.TransparencyColor : '#ffffff #ffffff ff 0'));
+  parent.append(getSlider('Transparency Tolerance', 0, 100, data ? data.Tolerance : 0));
 
   var stretch = [
     'None',
@@ -240,24 +267,24 @@ const formatPicture = () => {
     'UniformToFill',
   ];
 
-  parent.append(getSelect('Stretch', stretch, 2));
+  parent.append(getSelect('Stretch', stretch, data ? stretch.indexOf(data.Stretch) : 2));
 
   syncSlider(); 
   syncColorSlider();
 }
 
-const formatBarcode = () => {
+const formatBarcode = data=> {
   const parent = $('#property');
   removeChildren(parent);
 
-  parent.append(getInput('Object Name'));
-  parent.append(getSlider('Opacity', 0 , 100));
-  parent.append(getSlider('Z-Order', -100, 100));
-  parent.append(getHorizontalLine());
-  parent.append(getInput2('Location'));
-  parent.append(getInput2('Size', [200, 100]));
-  parent.append(getInput3('Rotation'));
-  parent.append(getHorizontalLine());
+  parent.append(getInput('Object Name', data ? data.ObjectName : ''));
+  parent.append(getSlider('Opacity', 0 , 100, data ? data.Opacity : 100));
+  parent.append(getSlider('Z-Order', -100, 100, data ? data['Z-Order'] : null));
+  // parent.append(getHorizontalLine());
+  parent.append(getInput2('Location', data ? [data.Location.x, data.Location.y] : [0, 0]));
+  parent.append(getInput2('Size', data ? [data.Size.width, data.Size.height] : [200, 100]));
+  parent.append(getInput3('Rotation', data ? [data.Rotation.a, data.Rotation.x, data.Rotation.y] : null));
+
 
   var type = [
     'CODE_39',
@@ -273,7 +300,7 @@ const formatBarcode = () => {
     'PLESSEEY',
   ];
 
-  parent.append(getSelect('Type', type, 7));
+  parent.append(getSelect('Type', type, data ? type.indexOf(data.Type) : 7));
 
   var stretch = [
     'None',
@@ -281,10 +308,10 @@ const formatBarcode = () => {
     'Uniform',
     'UniformToFill',
   ];
-  parent.append(getSelect('Stretch', stretch, 2));
-  parent.append(getTextArea('Design Data', '123456789'));
-  parent.append(getTextArea('Data'));
-  parent.append(getHorizontalLine());
+  parent.append(getSelect('Stretch', stretch, data ? stretch.indexOf(data.Stretch) : 2));
+  parent.append(getTextArea('Design Data', data ? data.DesignData : '123456789'));
+  parent.append(getTextArea('Data', data ? data.Data : ''));
+  // parent.append(getHorizontalLine());
 
   // parent.append(getSelect2('Fill', colorStyle, 0, '#ffffff'));
   // parent.append(getSelect2('Outline', colorStyle, 0, '#000000'));
@@ -294,29 +321,45 @@ const formatBarcode = () => {
 }
 
 
-const formatShape = name => {
-  var title = name.capitalize() + ' Properties';
+const formatShape = layer => {
+  var title;
+  var data;
+  var name;
+
+  if (typeof layer === 'string') {
+    title = layer.capitalize() + ' Properties';
+    name = layer;
+    data = null;
+  } else {
+    name = layer.layerName.replace(/[0-9]/g, '');
+    title = name.capitalize() + ' Properties';
+    data = layer.data;
+  }
 
   $('#property').parent().prev().text(title);
 
   switch (name) { 
     case 'rectangle':
-      formatRect();
+      formatRect(data);
       break;  
     case 'line':
-      formatLine();
+      formatLine(data);
       break; 
     case 'ellipse':
-      formatEllipse();
+      formatEllipse(data);
       break;
     case 'text':
-      formatText();
+      formatText(data);
       break;
     case 'picture':
-      formatPicture();
+      formatPicture(data);
       break;
     case 'barcode':
-      formatBarcode();
+      formatBarcode(data);
       break;
   }
+}
+
+const divideRGBA = rgba => {
+  return [rgba.substr(0, rgba.length - 2), parseInt(rgba.substr(rgba.length - 2), 16) * 100 / 255];
 }

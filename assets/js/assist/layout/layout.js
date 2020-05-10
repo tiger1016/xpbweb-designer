@@ -7,10 +7,10 @@ var text_num = 0;
 
 
 const layout = name => {
-  const layout = $('#layout');
-  if (!layout.children().length) {
-    layout.append('<ul></ul>');
-  }
+  // const layout = $('#layout');
+  // if (!layout.children().length) {
+  //   layout.append('<ul></ul>');
+  // }
 
 
   switch (name) {
@@ -40,7 +40,7 @@ const layout = name => {
       break;
   }
 
-  layout.children(':first-child').append(getList(name));
+  // layout.children(':first-child').append(getList(name));
 
   return name;
 }

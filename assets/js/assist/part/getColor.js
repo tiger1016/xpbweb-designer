@@ -1,71 +1,14 @@
-var gradNo = 0;
-
-const getLinearGradient = rgba => {
-  var gradStops = [];
-
-  var stops = node.getElementsByTagName('d5p1:GradientStops')[0].childNodes;
-  var activeStop = stops[0];
-  for (var i = 0; i < stops.length; i ++) {
-      gradStops.push({
-          offset: activeStop.getElementsByTagName('d5p1:Offset')[0].textContent,
-          style: getColor(activeStop.getElementsByTagName('d5p1:Color')[0])
-      });
-      activeStop = activeStop.nextSibling;
-  }
-
-  var xS = node.getElementsByTagName('d5p1:StartPoint')[0].firstChild.textContent;
-  var yS = node.getElementsByTagName('d5p1:StartPoint')[0].lastChild.textContent;
-  var xE = node.getElementsByTagName('d5p1:EndPoint')[0].firstChild.textContent;
-  var yE = node.getElementsByTagName('d5p1:EndPoint')[0].lastChild.textContent;
-
-  var id = 'grad' + (gradNo++);
-
-  var firstChild = $('svg').children(':first-child');
-
-  var handle;
-  if (firstChild[0].tagName === 'defs') {
-      handle = svgDom.select('defs');
-  } else {
-      handle = svgDom.insert('defs', ':first-child');
-  }
-
-  var defs = handle.append('linearGradient')
-      .attr('id', id)
-      .attr('x1', xS)
-      .attr('y1', yS)
-      .attr('x2', xE)
-      .attr('y2', yE)
-      
-  gradStops.map(value => {
-      defs.append('stop')
-          .attr('offset', value.offset)
-          .attr('style', "stop-color: " + value.style);
-  });   
-
-  return "url(#" + id + ")";
+const getSolidColor = (color, opacity) => {
+  return color + opacity;
 }
 
-const getRadialGradient = rgba => {
-  var gradStops = [];
+const getLinearGradient = (id, type, data) => {
+  var color1 = data[0] + data[2];
+  var color2 = data[1] + data[3];
+  var stop1 = data[4] + '%';
+  var stop2 = data[5] + '%';
 
-  var stops = node.getElementsByTagName('d5p1:GradientStops')[0].childNodes;
-  var activeStop = stops[0];
-  for (var i = 0; i < stops.length; i ++) {
-      gradStops.push({
-          offset: activeStop.getElementsByTagName('d5p1:Offset')[0].textContent,
-          style: getColor(activeStop.getElementsByTagName('d5p1:Color')[0])
-      });        
-      activeStop = activeStop.nextSibling;
-  }
-
-  var cx = node.getElementsByTagName('d5p1:Center')[0].firstChild.textContent;
-  var cy = node.getElementsByTagName('d5p1:Center')[0].lastChild.textContent;
-  var fx = node.getElementsByTagName('d5p1:GradientOrigin')[0].firstChild.textContent;
-  var fy = node.getElementsByTagName('d5p1:GradientOrigin')[0].lastChild.textContent;
-
-  var r = node.getElementsByTagName('d5p1:RadiusX')[0].firstChild.textContent;
-
-  var id = 'grad' + (gradNo++);
+  var no = id + type;
 
   var firstChild = $('svg').children(':first-child');
 
@@ -75,54 +18,99 @@ const getRadialGradient = rgba => {
   } else {
       handle = svgDom.insert('defs', ':first-child');
   }
+
+  $('svg').find('linearGradient')
+    .each((index, lin) => {
+      if ($(lin).attr("id") === no) $(lin).remove();
+    })
+  
+  var defs = handle.append('linearGradient')
+      .attr('id', no)
+      .attr('x1', stop1)
+      .attr('y1', '0%')
+      .attr('x2', stop2)
+      .attr('y2', '0%')
+  
+  defs.append('stop')
+      .attr('offset', '0%')
+      .attr('style', "stop-color: " + color1);
+
+  defs.append('stop')
+      .attr('offset', '100%')
+      .attr('style', "stop-color: " + color2);
+
+  return "url(#" + no + ")";
+}
+
+const getRadialGradient = (id, type, data) => {
+  var color1 = data[0] + data[2];
+  var color2 = data[1] + data[3];
+  var stop1 = data[4] + '%';
+  var stop2 = data[5] + '%';
+
+  var no = id + type;
+
+  var firstChild = $('svg').children(':first-child');
+
+  var handle;
+  if (firstChild[0].tagName === 'defs') {
+      handle = svgDom.select('defs');
+  } else {
+      handle = svgDom.insert('defs', ':first-child');
+  }
+
+  $('svg').find('radialGradient')
+    .each((index, lin) => {
+      if ($(lin).attr("id") === no) $(lin).remove();
+    })
 
   var defs = handle.append('radialGradient')
-      .attr('id', id)
-      .attr('cx', cx)
-      .attr('cy', cy)
-      .attr('r', r)
-      .attr('fx', fx)
-      .attr('fy', fy)
+      .attr('id', no)
+      .attr('cx', '50%')
+      .attr('cy', '50%')
+      .attr('r', '50%')
+      .attr('fx', stop1)
+      .attr('fy', stop2)
       
-  gradStops.map(value => {
-      defs.append('stop')
-          .attr('offset', value.offset)
-          .attr('style', "stop-color: " + value.style);
-  });   
+  defs.append('stop')
+      .attr('offset', '0%')
+      .attr('style', "stop-color: " + color1);
 
-  return "url(#" + id + ")";
+  defs.append('stop')
+      .attr('offset', '100%')
+      .attr('style', "stop-color: " + color2);
+
+  return "url(#" + no + ")";
 }
 
-const getDynamicColor = stroke => {
-  var color;
+const getDynamicColor = (id, type, fill) => {
+  var data = fill.Color;
+  var style = fill.Style;
 
-  if (!stroke) {
-    return null;
+  var color = data.split(' ');
+  if (!color[1] && color[3]) {
+    return getSolidColor(color[0], color[2]);
   }
 
-  if (!stroke.Color || !stroke.Style) {
-    return null;
-  }
-
-  switch (stroke.Style) {
+  switch (style) {
     case colorStyle[0]:
-      color = stroke.Color;
-      break;
+      return getSolidColor(color[0], color[2]);
     case colorStyle[1]:
-      color = getLinearGradient(stroke.Color);
-      break;
+      return getLinearGradient(id, type, color);
     case colorStyle[2]:
-      color = getRadialGradient(stroke.Color);
-      break;
+      return getRadialGradient(id, type, color);
   }
-  return color;
 }
 
-const getEachPixel = color => {
+const getEachPixel = data => {
+  var temp = data.split(' ');
+  var color = temp[0];
+  var opacity = temp[2];
+
   const r = parseInt(color.substr(1, 2), 16);
   const g = parseInt(color.substr(3, 2), 16);
   const b = parseInt(color.substr(5, 2), 16);
-  const a = parseInt(color.substr(7, 2), 16);
+  const a = parseInt(opacity, 16);
    
   return [r, g, b, a];
 }
