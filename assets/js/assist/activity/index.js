@@ -1,8 +1,50 @@
-const createPanel = () => {
+const createPanel = async () => {
   const panel = $('#panel');
-  panel.addClass('screen');
+
+  if (layers.length > 1) {
+    if (confirm('Do you want to save recent work?')) {
+      await savePanel();
+    }    
+  }
+
+  initializeParams();
+
+  panel.addClass('screen')
   panel.trigger('click');
 
+  toolboxInit();
+
+  property_action();
+
+  activeLayer = {
+    layerName: 'panel',
+    data: readPanel()
+  }
+
+  layers.push(activeLayer);
+}
+
+const initializeParams = () => {
+  layers.splice(0, layers.length);
+  activeLayer = null;
+  svgDom = null;
+  fonts = [];
+  action_mode = true;
+  rect_num = 1;
+  line_num = 1;
+  ellipse_num = 1;
+  picture_num = 1;  
+  barcode_num = 1;
+  text_num = 1;
+  svgDom = null;
+  DU = 0;
+
+  $('#toolbox').empty();
+  $('#property').empty();
+  $('#panel').empty();
+}
+
+const toolboxInit = () => {
   const toolbox = $('#toolbox');
   toolbox.append(
     ` <button class="drawing-tool svg-rect" id='bn-rectangle'></button>
@@ -15,20 +57,13 @@ const createPanel = () => {
 
   toolbox.css('padding-top', '7px');
   toolbox.css('padding-bottom', '7px');
-
-  property_action();
-
-  activeLayer = {
-    layerName: 'panel',
-    data: readPanel()
-  }
-
-  layers.push(activeLayer);
-  initPanel(activeLayer.data);
 }
 
-
 const createTool = async id => {
+  if (layers.length === 1) {
+    await initPanel(layers[0].data);
+  }
+
   var name = id.slice(3);
   var layerName = layout(name);
 
@@ -40,22 +75,27 @@ const createTool = async id => {
     file.trigger('click');
     file.change(async () => {
       var data = await readShape(name);
+      data['ObjectName'] = layerName;
+
       activeLayer = {
         layerName,
         data,
       };
+      formatShape(activeLayer);
       
-      layers.push(activeLayer);    
+      layers.push(activeLayer);
       panel(activeLayer);
       selectRect(activeLayer.layerName, data);
     })
   } else {
     var data = await readShape(name);
+    data['ObjectName'] = layerName;
 
     activeLayer = {
       layerName,
       data,
     };
+    formatShape(activeLayer);
 
     layers.push(activeLayer);
     panel(activeLayer);
@@ -131,9 +171,10 @@ const refreshLayers = () => {
             .draw();
       }
       
-      if (data.TextWrapping.toLowerCase() === 'fixed') {
+      if (data.TextWrapping.toLowerCase() === 'fixed') {        
         g.select('text').attr('font-size', data.FontSize);
       }
+
       break;
   }
 
@@ -158,12 +199,44 @@ const zOrder = () => {
 }
 
 
+const resizePanel = () => {
+  $('#panel_parent').bind('mousewheel', function(e){
+    var zoom = parseFloat($(this).attr('val'));
+    if(e.originalEvent.wheelDelta < 0) {
+      zoom -= 0.1;        
+    }else {
+      zoom += 0.1;
+    }
+
+    $(this).attr('val', zoom);
+    $(this).css('transform-origin', '0% 0%');
+    $(this).css('transform', 'scale(' + zoom + ')');
+    
+    return false;
+  });
+
+  $('#panel_parent').bind('DOMMouseScroll', function(e){
+    var zoom = parseFloat($(this).attr('val'));
+    if(e.originalEvent.detail > 0) {
+      zoom -= 0.1;        
+    } else {
+      zoom += 0.1;
+    }
+
+    $(this).attr('val', zoom);
+    $(this).css('transform-origin', '0% 0%');
+    $(this).css('transform', 'scale(' + zoom + ')');
+
+    return false;
+  });
+}
+
+
 const refreshPanel = async data => {
   d3.select('#panel')
-    .attr("style", 'width: ' + eval(data.Width + 15) + 'px; height: ' + eval(data.Height + 15) + 'px');
+    .attr("style", 'width: ' + eval(data.Width) + 'px; height: ' + eval(data.Height) + 'px');
 
-  svgDom.attr('width', data.Width)
-    .attr("height", data.Height)
+  svgDom.attr("height", data.Height)
     .attr("width", data.Width)
     .attr("opacity", data.Opacity / 100)
     .attr("DefaultFont", data.DefaultFont)
@@ -183,4 +256,49 @@ const refreshPanel = async data => {
             .text(cssRules.join('\n'));
     }
   }
+}
+
+const loadPanel = () => {
+  const inputXML = $('#badge_load');
+  inputXML.unbind();
+  inputXML.trigger('click');
+
+  inputXML.change(function() {
+    const path = inputXML.val().toLowerCase();
+    if (path.search('.badge') < 0 && path.search('.xml') < 0 && path.search('.zip') < 0) {
+      alert('File type to be inserted should be one of xml, badge, or zip. \n Thanks');
+      inputXML.val('');
+    }
+    
+    if (inputXML.val() !== '') {
+      const formData = new FormData();
+      const xml = inputXML.get(0).files[0];
+      formData.append('files[]', xml, xml.name);
+      
+      fetch('assets/php/load.php', {
+        method: 'POST',
+        body: formData,
+      })
+      .then(response => response.json())
+      .then(json => {
+        if (json[0]) {
+          var parser = new DOMParser();
+          var xmlDom = parser.parseFromString(json[0],"text/xml");
+          encodeXML(xmlDom);
+        }
+        
+        if (layers.length) {
+          renderXML();
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      })
+
+    }
+  }); 
+}
+
+const savePanel = async () => {
+  // decodeXML();
 }

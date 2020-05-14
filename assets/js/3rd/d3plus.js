@@ -340,10 +340,10 @@ d3plus.textwrap = function() {
             for (var i = 0; i < len; i++) {
 
                 word = words[i];
-                if (line * dy > height) {
-                    truncate();
-                    break;
-                }
+                // if (line * dy > height) {
+                //     truncate();
+                //     break;
+                // }
                 placeWord(word);
                 var unsafe = true;
                 while (unsafe) {
@@ -355,9 +355,9 @@ d3plus.textwrap = function() {
                 }
             }
 
-            if (line * dy > height) {
-                truncate();
-            }
+            // if (line * dy > height) {
+            //     truncate();
+            // }
 
             return lines = Math.abs(line - start) + 1;
         };

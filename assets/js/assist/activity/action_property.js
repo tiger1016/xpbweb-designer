@@ -24,6 +24,7 @@ const property_action = () => {
     }
 
     $('#' + activeLayer.layerName).remove();
+    formatShape(activeLayer);
     panel(activeLayer);
     selectRect(activeLayer.layerName, data);
   });

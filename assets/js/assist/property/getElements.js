@@ -1,5 +1,9 @@
-const getInput = (name, def) => {
+const getInput = (name, def, type) => {
   var id = name.replace(/ /g, '');
+
+  if (type === 'size') {
+    def = convertFromPixel(def, DU).toFixed(5);
+  }
 
   return (
     `<div class='row' style='margin-top: 12px;'>
@@ -13,7 +17,7 @@ const getInput = (name, def) => {
   );
 }
 
-const getInput2 = (name, def) => {
+const getInput2 = (name, def, type) => {
   var id = name.replace(/ /g, '');
   def = def ? def : [0, 0];
 
@@ -23,12 +27,12 @@ const getInput2 = (name, def) => {
         <label for='${id}' style='float: right; margin-top: 3px;'>${name}</label>
       </div>
       <div class='col-sm-4'>
-        <label for='x' style='font-size: 10px;'>X:</label>
-        <input type='text' id='${id}_x' style='width: 100%;' value='${def[0]}' />
+        <label for='x' style='font-size: 10px;'>${type === 'size' ? 'Width:' : 'X:'}</label>
+        <input type='text' id='${id}_x' style='width: 100%;' value='${convertFromPixel(def[0], DU).toFixed(5)}' />
       </div>
       <div class='col-sm-4'>
-        <label for='y' style='font-size: 10px;'>Y:</label>
-        <input type='text' id='${id}_y' style='width: 100%;' value='${def[1]}' />
+        <label for='y' style='font-size: 10px;'>${type === 'size' ? 'Height:' : 'Y:'}</label>
+        <input type='text' id='${id}_y' style='width: 100%;' value='${convertFromPixel(def[1], DU).toFixed(5)}' />
       </div>
     </div>`
   );
@@ -69,7 +73,7 @@ const getTextArea = (name, value) => {
         <label for='${id}' style='float: right;'>${name}</label>
       </div>
       <div class='col-sm-8'>
-        <input type='textarea' id='${id}' style='width: 100%; height: 70px' value='${value}' />
+        <textarea id='${id}' style='width: 100%;'>${value}</textarea>
       </div>
     </div>`
   );
@@ -109,17 +113,24 @@ const getSelect = (name, value, defSel) => {
 
 const getSelect2 = (name, value, defSel, defCol) => {
   var id = name.replace(/ /g, '');
-  defSel = defSel ? defSel : 0;
-  defCol = defCol ? defCol : '#ffffff #ffffff ff 00 0 100';
-
+  
   var cols = defCol.split(' ');
+  
+  var coln = parseInt(cols[0]);
 
+  var colors = [], opacity = [], offset = [];
+  for (var i = 0; i < coln; i ++) {
+    colors.push(cols[6+2*i] ? cols[6+2*i].substr(0, 7) : '#ffffff');
+    opacity.push(cols[6+2*i] ? cols[6+2*i].substr(7) : '00');
+    offset.push(cols[7+2*i]);
+  }
+  
   return (
     `<div class='row color-slider' style='margin-top: 12px;'>
       <div class='col-sm-4'>
         <label for='${id}' style='float: right;'>${name}</label>
       </div>
-      <div class='col-sm-8'>
+      <div class='col-sm-6'>
         <select id='${id}_sel' style='width: 100%; height: 100%;'>
           ${
             value.map((element, index) => {
@@ -136,21 +147,48 @@ const getSelect2 = (name, value, defSel, defCol) => {
           }
         </select>
       </div>
-      <div class='col-offset-sm-4 col-sm-2' style='margin-top: 8px'>
-        <input type='color' id='${id}_color' style='width: 100%' value='${cols[0]}' />
+      <div class='col-sm-2'>
+        <input id='${id}_stops' type='number' value='${coln}' min='2' max='10' ${!defSel ? 'disabled' : 'none'} style='width: 100%' />
       </div>
-      <div class='col-sm-6' style='margin-top: 8px'>
-        <input type='range' id='${id}_opacity' style='width: 100%' min='0' max='100' value='${parseInt(cols[2], 16) * 100 / 255}' />
-        <input id="${id}_x1" type="number" value="${cols[4]}" min="0" max="100" ${!defSel ? 'hidden' : 'none'}/>
-      </div>     
-      <div class='col-offset-sm-4 col-sm-2' style='margin-top: 8px' ${!defSel ? 'hidden' : 'none'}>
-        <input type='color' id='${id}_color_stop' style='width: 100%' value='${cols[1]}' />
+      <div class='col-sm-4' style='margin-top: 12px;' ${!defSel ? 'hidden' : 'none'}>
+        <label for='${id}_option' style='float: right;'>Option</label>
       </div>
-      <div class='col-sm-6' style='margin-top: 8px' ${!defSel ? 'hidden' : 'none'}>
-        <input type='range' id='${id}_opacity_stop' style='width: 100%' min='0' max='100' value='${parseInt(cols[3], 16) * 100 / 255}' />
-        <input id="${id}_x2" type="number" value="${cols[5]}" min="0" max="100" />
-      </div>
-      <input type='text' id='${id}' style='width: 100%' hidden/>
+      <div class='col-sm-8' style='margin-top: 12px' ${!defSel ? 'hidden' : 'none'}>
+          <input id="${id}_x1" type="number" value="${cols[1]}" min="0" max="100" />
+          <input id="${id}_y1" type="number" value="${cols[2]}" min="0" max="100" />
+          <input id="${id}_x2" type="number" value="${cols[3]}" min="0" max="100" />
+          <input id="${id}_y2" type="number" value="${cols[4]}" min="0" max="100" />
+          <input id="${id}_r" type="number" value="${cols[5]}" min="0" max="100" ${defSel === 1 ? 'hidden' : 'none'}/>
+      </div>      
+      ${
+        !defSel ? `<div class='col-sm-4' style='margin-top: 12px;'>
+                  <label for='${id}_selection_0' style="float: right;">Choose Color</label>
+                </div>
+                <div class='col-offset-sm-4 col-sm-2' style='margin-top: 8px'>
+                  <input type='color' id='${id}_color_0' style='width: 100%' value='${colors[0]}' />
+                </div>
+                <div class='col-sm-4' style='margin-top: 8px'>
+                  <input type='range' id='${id}_opacity_0' style='width: 100%' min='0' max='100' value='${parseInt(opacity[0], 16) * 100 / 255}' />
+                </div>
+                ` :
+        colors.map((color, index) => {
+          return (
+            `<div class='col-sm-4' style='margin-top: 12px;'>
+              <label for='${id}_selection_${index}' style="float: right;">Choose Color${index + 1}</label>
+            </div>
+            <div class='col-sm-2' style='margin-top: 12px'>
+              <input type='color' id='${id}_color_${index}' style='width: 100%' value='${color}' style='width: 100%;'/>
+            </div>
+            <div class='col-sm-4' style='margin-top: 12px'>
+              <input type='range' id='${id}_opacity_${index}' style='width: 100%' min='0' max='100' value='${parseInt(opacity[index], 16) * 100 / 255}' />
+            </div>
+            <div class='col-sm-2' style='margin-top: 12px'>
+              <input id="${id}_offset_${index}" type="number" value="${offset[index] !== 'undefined' ? offset[index] : 0}" min="0" max="100" style='width: 100%;'/>
+            </div>`
+          )
+        })  
+      }
+      <input type='text' id='${id}' hidden/>
     </div>`
   );
 }
@@ -189,9 +227,10 @@ const getSlider = (name, min, max, pos) => {
   );
 }
 
-const getSpin = (name, def, min) => {
+const getSpin = (name, def, min, max) => {
   var id = name.replace(/ /g, '');
   var pos = def || def === 0 ? def : 1;
+  max = max ? max : 999;
 
   return (
     `<div class='row' style='margin-top: 12px;'>
@@ -199,7 +238,7 @@ const getSpin = (name, def, min) => {
         <label for='${id}' style='float: right;'>${name}</label>
       </div>
       <div class='col-sm-8'>
-        <input id="${id}" type="number" value="${pos}" min="${min}" max="999" style='width: 100%'/>
+        <input id="${id}" type="number" value="${pos}" min="${min}" max="${max}" style='width: 100%'/>
       </div>
     </div>`
   );
@@ -215,19 +254,18 @@ const getHorizontalLine = () => {
 
 const getColor = (name, defCol) => {
   var id = name.replace(/ /g, '');
-  defCol = defCol ? defCol : '#ffffff undefined ff 0';
-  var cols = defCol.split(' ');
+  const cols = defCol.split(' ');
 
   return (
-    `<div class='row color-slider' style='margin-top: 12px;'>
+    `<div class='row color-slider1' style='margin-top: 12px;'>
       <div class='col-sm-4'>
         <label for='${id}' style='float: right;'>${name}</label>
       </div>
       <div class='col-sm-2'>
-        <input id="${id}_color" type="color" value="${cols[0]}" style='width: 100%'/>
+        <input id="${id}_color" type="color" value="${cols[6].substr(0, 7)}" style='width: 100%'/>
       </div>
       <div class='col-sm-6'>
-        <input id="${id}_opacity" type="range" min='0', max='100' value='${parseInt(cols[2], 16) * 100 / 255}' style='width: 100%'/>
+        <input id="${id}_opacity" type="range" min='0', max='100' value='${parseInt(cols[6].substr(7), 16) * 100 / 255}' style='width: 100%'/>
       </div>
       <input type='text' id='${id}' hidden/>
     </div>`
@@ -255,9 +293,9 @@ const syncSlider = () => {
   $('.slider').each((index, node) => {
     const text = $(node).parent().next().children(":first-child");
 
-    $(node)[0].oninput = function() {
+    $(node).change(function() {
       text.val(this.value);
-    }  
+    });
 
     $(text).change(function() {
       var max = parseInt($(node).attr('max'));
@@ -267,9 +305,25 @@ const syncSlider = () => {
 
       $(node).val(pos);
       $(this).val(pos);
-    })
+    });
   })
 }
+
+const syncSize = () => {
+  $('#DisplayUnit').change(function() {
+    var width = $('#Width');
+    var height = $('#Height');
+
+    if (displayUnit.indexOf(this.value) === 0) {
+      width.val((parseFloat(width.val() / 2.54).toFixed(5)));
+      height.val((parseFloat(height.val()) / 2.54).toFixed(5));
+    } else {
+      width.val((parseFloat(width.val()) * 2.54).toFixed(5));
+      height.val((parseFloat(height.val()) * 2.54).toFixed(5));
+    }
+  });
+}
+
 
 const removeChildren = parent => {
   var last = parent.children(":last-child")[0];
@@ -283,61 +337,104 @@ const syncColorSlider = () => {
     const color_rgba = $(node).find('input[type=text]');
     var id = color_rgba.attr('id');
 
-    const color_rgb1 = $(node).find('#' + id + '_color');
-    const color_rgb2 = $(node).find('#' + id + '_color_stop');
-    const opacity1 = $(node).find('#' + id + '_opacity');
-    const opacity2 = $(node).find('#' + id + '_opacity_stop');
+    const coln = $(node).find('#' + id + '_stops');
     const x1 = $(node).find('#' + id + '_x1');
     const x2 = $(node).find('#' + id + '_x2');
+    const y1 = $(node).find('#' + id + '_y1');
+    const y2 = $(node).find('#' + id + '_y2');
+    const r = $(node).find('#' + id + '_r');
 
-    const f = () => {
-      $(color_rgba).val(color_rgb1.val() + ' ' + color_rgb2.val() + ' ' + rgbToHex(parseInt(opacity1.val())) + ' ' + rgbToHex(parseInt(opacity2.val())) + ' ' + x1.val() + " " + x2.val());
+    const read = () => {      
+      var colCount = parseInt(coln.val());
+      var result = colCount + ' ' + x1.val() + ' ' + y1.val() + ' ' + x2.val() + ' ' + y2.val() + ' ' + r.val();
 
-      $(color_rgb1).change(function() {
-        $(color_rgba).val(color_rgb1.val() + ' ' + color_rgb2.val() + ' ' + rgbToHex(parseInt(opacity1.val())) + ' ' + rgbToHex(parseInt(opacity2.val())) + ' ' + x1.val() + " " + x2.val());
-      });
-  
-      $(color_rgb2).change(function() {
-        $(color_rgba).val(color_rgb1.val() + ' ' + color_rgb2.val() + ' ' + rgbToHex(parseInt(opacity1.val())) + ' ' + rgbToHex(parseInt(opacity2.val())) + ' ' + x1.val() + " " + x2.val());
-      });
-  
-      $(opacity1).change(function() {
-        $(color_rgba).val(color_rgb1.val() + ' ' + color_rgb2.val() + ' ' + rgbToHex(parseInt(opacity1.val())) + ' ' + rgbToHex(parseInt(opacity2.val())) + ' ' + x1.val() + " " + x2.val());
-      });
-      
-      $(opacity2).change(function() {
-        $(color_rgba).val(color_rgb1.val() + ' ' + color_rgb2.val() + ' ' + rgbToHex(parseInt(opacity1.val())) + ' ' + rgbToHex(parseInt(opacity2.val())) + ' ' + x1.val() + " " + x2.val());
-      });
-  
-      $(x1).change(function() {
-        $(color_rgba).val(color_rgb1.val() + ' ' + color_rgb2.val() + ' ' + rgbToHex(parseInt(opacity1.val())) + ' ' + rgbToHex(parseInt(opacity2.val())) + ' ' + x1.val() + " " + x2.val());
-      });
-  
-      $(x2).change(function() {
-        $(color_rgba).val(color_rgb1.val() + ' ' + color_rgb2.val() + ' ' + rgbToHex(parseInt(opacity1.val())) + ' ' + rgbToHex(parseInt(opacity2.val())) + ' ' + x1.val() + " " + x2.val());
-      });
-    }
+      var color, offset, opacity;
+      for (var i = 0; i < colCount; i ++) {
+        color = $(node).find('#' + id + '_color_' + i).val();
+        opacity = $(node).find('#' + id + '_opacity_' + i).val();
+        offset = $(node).find('#' + id + '_offset_' + i).val();
 
+        if (!color) color = '#ffffff';
+        if (!opacity) opacity = '0';
+        if (!offset) offset = '0';
 
-    $(node).find('select').change(function() {
-      var select = $(this).val();
-      var pos = colorStyle.indexOf(select);
-
-      if (pos) {
-        x1.show();
-        x2.parent().show();
-        color_rgb2.parent().show();
-      } else {
-        x1.hide();
-        x2.parent().hide();
-        color_rgb2.parent().hide();
+        result += ' ' + color + rgbToHex(parseInt(opacity)) + ' ' + offset;
       }
 
-      f();      
-    })
+      return result;
+    }
+    
+    $(color_rgba).val(read());
 
-    f();
+    var color, offset, opacity;
+    for (var i = 0; i < parseInt(coln.val()); i ++) {
+      color = $(node).find('#' + id + '_color_' + i);
+      opacity = $(node).find('#' + id + '_opacity_' + i);
+      offset = $(node).find('#' + id + '_offset_' + i);
+
+      color.change(function() {
+        $(color_rgba).val(read());
+      })        
+      
+      opacity.change(function() {
+        $(color_rgba).val(read());
+      })        
+      
+      offset.change(function() {
+        $(color_rgba).val(read());
+      })
+    }
+
+    x1.change(function() {
+      $(color_rgba).val(read());
+    });
+
+    x2.change(function() {
+      $(color_rgba).val(read());
+    });
+
+    y1.change(function() {
+      $(color_rgba).val(read());
+    });
+
+    y2.change(function() {
+      $(color_rgba).val(read());
+    });
+
+    r.change(function() {
+      $(color_rgba).val(read());
+    });
+
+    coln.change(function() {
+      $(color_rgba).val(read());
+    })
   });
+}
+
+const syncColorSlider1 = () => {  
+  const node = $('.color-slider1')
+  const color_rgba = $(node).find('input[type=text]');
+  var id = color_rgba.attr('id');
+
+  const color = $(node).find('#' + id + '_color');
+  const opacity = $(node).find('#' + id + '_opacity');
+
+  const read = () => {      
+    var result = 'undefined undefined undefined undefined undefined undefined';
+    result += ' ' + color.val() + rgbToHex(parseInt(opacity.val()));
+
+    return result;
+  }
+  
+  $(color_rgba).val(read());
+
+  color.change(function() {
+    $(color_rgba).val(read());
+  })        
+  
+  opacity.change(function() {
+    $(color_rgba).val(read());
+  })
 }
 
 var rgbToHex = function (val) {

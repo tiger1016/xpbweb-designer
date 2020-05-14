@@ -2,6 +2,7 @@ const layers = [];
 var activeLayer = null;
 var svgDom = null;
 var fonts = [];
+var DU = 0;
 
 const init = () => {
   // when 'panel' click
@@ -22,7 +23,7 @@ const init = () => {
         tag = tag.parent();
         id = tag.attr('id');
       }
-
+      
       setActiveLayer(id);
     }
   });
@@ -56,6 +57,7 @@ const init = () => {
           case 'Escape':
             $('#selected').remove();
             activeLayer = null;
+            $('#panel').trigger('click');
             break;
           case 'Delete':
             const index = layers.indexOf(activeLayer);
@@ -63,6 +65,10 @@ const init = () => {
             $('#' + activeLayer.layerName).remove();
             $('#selected').remove();
             activeLayer = null;
+            
+            if (layers.length === 1 && layers[0].layerName === 'panel') {
+              $('svg').empty();
+            }
             break;
           case 'ArrowRight':
             move(10, 0);
@@ -80,6 +86,9 @@ const init = () => {
       } 
     }
   })
+
+  resizePanel();
+
 }
 
 init();

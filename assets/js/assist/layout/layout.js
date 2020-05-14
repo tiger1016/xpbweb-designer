@@ -1,18 +1,12 @@
-var rect_num = 0;
-var line_num = 0;
-var ellipse_num = 0;
-var picture_num = 0;
-var barcode_num = 0;
-var text_num = 0;
+var rect_num = 1;
+var line_num = 1;
+var ellipse_num = 1;
+var picture_num = 1;
+var barcode_num = 1;
+var text_num = 1;
 
 
 const layout = name => {
-  // const layout = $('#layout');
-  // if (!layout.children().length) {
-  //   layout.append('<ul></ul>');
-  // }
-
-
   switch (name) {
     case "line":
       name = line_num ? name + line_num : name;
@@ -39,8 +33,6 @@ const layout = name => {
       barcode_num++;
       break;
   }
-
-  // layout.children(':first-child').append(getList(name));
 
   return name;
 }

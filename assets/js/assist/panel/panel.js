@@ -1,17 +1,21 @@
 const panel = layer => {
-  if (layer.layerName && layer.layerName.search('line') === 0) {
-    panelLine(layer);
-  } else if (layer.layerName && layer.layerName.search('rectangle') === 0) {
-    panelRect(layer);
-  } else if (layer.layerName && layer.layerName.search('ellipse') === 0) {
-    panelEllipse(layer);    
-  } else if (layer.layerName && layer.layerName.search('text') === 0) {
-    panelText(layer);    
-  } else if (layer.layerName && layer.layerName.search('picture') === 0) {
-    panelPicture(layer);    
-  } else if (layer.layerName && layer.layerName.search('barcode') === 0) {
-    panelBarcode(layer);    
-  }
+  return new Promise(async resolve => {
+    if (layer.layerName && layer.layerName.search('line') === 0) {
+      panelLine(layer);
+    } else if (layer.layerName && layer.layerName.search('rectangle') === 0) {
+      panelRect(layer);
+    } else if (layer.layerName && layer.layerName.search('ellipse') === 0) {
+      panelEllipse(layer);    
+    } else if (layer.layerName && layer.layerName.search('text') === 0) {
+      await panelText(layer);    
+    } else if (layer.layerName && layer.layerName.search('picture') === 0) {
+      await panelPicture(layer);    
+    } else if (layer.layerName && layer.layerName.search('barcode') === 0) {
+      panelBarcode(layer);    
+    }
+
+    resolve();
+  })  
 }
 
 const panelLine = layer => {
@@ -94,7 +98,7 @@ const panelText = async layer => {
 
   gOut.attr("id", id)
       .attr('opacity', data.Opacity / 100)
-      .attr('z-indx', data['Z-Order'])
+      .attr('z-index', data['Z-Order'])
       .attr('name', data.ObjectName)
       .attr('transform', "translate(" + data.Location.x + ", " + data.Location.y + ") rotate(" + data.Rotation.a + " " + eval(data.Rotation.x + data.Size.width / 2) + " " + eval(data.Rotation.y + data.Size.height / 2) + ')')
 
@@ -106,9 +110,9 @@ const panelText = async layer => {
       .attr("height", data.Size.height)
   
   text.attr("font-size", data.FontSize)
-      .attr("font-style", data.FontStyle.toLowerCase())
+      .attr("font-style", data.FontStyle ?  data.FontStyle.toLowerCase() : '')
       .attr("font-weight", data.FontWeight)
-      .attr("font-stretch", data.FontStretch.toLowerCase())
+      .attr("font-stretch", data.FontStretch ? data.FontStretch.toLowerCase() : '')
       .attr('text-anchor', data.HAlignment.toLowerCase())
       .attr('text-decoration', data.TextDecoration.toLowerCase() === "strikethrough" ? "line-through": data.TextDecoration.toLowerCase());
 
@@ -138,8 +142,8 @@ const panelText = async layer => {
     }
   }
 
- var stroke = getDynamicColor(id, 'stroke', data.Outline);
- if (!stroke) {
+  var stroke = getDynamicColor(id, 'stroke', data.Outline);
+  if (!stroke) {
     text.attr('fill', 'black')
         .attr('fill-opacity', 1);
   } else {
@@ -153,9 +157,14 @@ const panelText = async layer => {
   var line = parseFloat(data.LineHeight);
   
   var fillColor = getDynamicColor(id, 'fill', data.Fill);
-  gOut.selectAll('rect').attr('fill', fillColor);
+  if (!fillColor) {
+    gOut.selectAll('rect')
+        .attr('fill', 'none')
+  } else {
+    gOut.selectAll('rect').attr('fill', fillColor);
+  }
 
-  if (showBorder && (fillColor.split('').reverse().join('').search('00') === 0 || fillColor === 'none' || fillColor.search('#ffffff') === 0)) {
+  if (showBorder && !fillColor && (fillColor.split('').reverse().join('').search('00') === 0 || fillColor === 'none' || fillColor.search('#ffffff') === 0)) {
     gOut.selectAll('rect')
         .attr('stroke', "#cdcdcd")
         .attr("stroke-alignment", 'inner')
@@ -188,125 +197,128 @@ const panelText = async layer => {
 }
 
 const panelPicture = layer => {
-  var data = layer.data;
-  var id = layer.layerName;
-
-  const property = $('#property');
-
-  var g = svgDom.append('g');
-  var image = g.append('image');
-  var rect = g.append('rect');
-
-  var x = parseFloat(data.Location.x);
-  var y = parseFloat(data.Location.y);
-
-  w = parseFloat(data.Size.width);
-  h = parseFloat(data.Size.height);
-
-  g.attr("id", id)
-    .attr('opacity', data.Opacity / 100)
-    .attr('name', data.ObjectName)
-    .attr('z-indx', data['Z-Order'])
-    .attr('transform', "translate(" + x + ", " + y + ") rotate(" + data.Rotation.a + " " + eval(data.Rotation.x + w / 2) + " " + eval(data.Rotation.y +h / 2) + ')');
-
-  rect.attr('width', w)
-      .attr('height', h)
-      .attr('x', 0)
-      .attr('y', 0)
-      .attr('fill', 'none')
-      .attr('stroke', 'none');
-          
-  var  color = getEachPixel(data.TransparencyColor);
-  var tolerance = parseInt(data.TransparencyTolerance);
-  var  stretch = data.Stretch.toLowerCase();
-  var designerSource = data.DesignerSource;
+  return new Promise(resolve => {
+    var data = layer.data;
+    var id = layer.layerName;
   
-  var img = new Image();
-  img.src = "data:image/jpeg;base64," + designerSource[1];
-  img.onload = function() {
-    draw(this);
-  };
+    var g = svgDom.append('g');
+    var image = g.append('image');
+    var rect = g.append('rect');
   
-  const draw = async img => {
-    var canvas = document.createElement('canvas');
-    var ctx = canvas.getContext('2d');
-    canvas.width = img.width;
-    canvas.height = img.height;
-
-    ctx.drawImage(img, 0, 0);
-    img.style.display = 'none';
-    var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    var data_color = imageData.data;
-          
-    var imgProcess = function() {                
-      for (var i = 0; i < data_color.length; i += 4) {
-        if (Math.max(Math.abs(data_color[i] - color[0]), Math.abs(data_color[i+1] - color[1]), Math.abs(data_color[i+2] - color[2])) < tolerance) {
-          data_color[i + 3] = 0;
-        }
-      }
-      ctx.putImageData(imageData, 0, 0);
+    var x = parseFloat(data.Location.x);
+    var y = parseFloat(data.Location.y);
+  
+    w = parseFloat(data.Size.width);
+    h = parseFloat(data.Size.height);
+  
+    g.attr("id", id)
+      .attr('opacity', data.Opacity / 100)
+      .attr('name', data.ObjectName)
+      .attr('z-index', data['Z-Order'])
+      .attr('transform', "translate(" + x + ", " + y + ") rotate(" + data.Rotation.a + " " + eval(data.Rotation.x + w / 2) + " " + eval(data.Rotation.y +h / 2) + ')');
+  
+    rect.attr('width', w)
+        .attr('height', h)
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr('fill', 'none')
+        .attr('stroke', 'none');
+            
+    var color = getEachPixel(data.TransparencyColor);
+    var tolerance = parseInt(data.TransparencyTolerance);
+    var stretch = data.Stretch.toLowerCase();
+    var designerSource = data.DesignerSource;
+    
+    var img = new Image();
+    img.src = "data:image/jpeg;base64," + designerSource[1];
+    img.onload = function() {
+      draw(this);
     };
-      
-    if (color[3] !== 0) {
-      imgProcess();
-    }
-
-    const srcLast = await fetchImage(canvas.toDataURL("image/png", 1.0), 'jpeg');
-
-    const imgLast = new Image();
-    imgLast.onload = function() {
-      image.attr('x', 0)
-          .attr('y', 0)
-          .attr('height', h)
-          .attr('width', w)
-          .attr('href', srcLast);
-
-      switch (stretch) {
-        case 'uniform':
-          image.attr('preserveAspectRatio', "xMidYMid meet");
-          break;      
-        case 'uniformtofill':
-          if (w > h) {
-            image.attr('preserveAspectRatio', "xMidYMin slice");    
-          } else {
-            image.attr('preserveAspectRatio', 'xMinYMid slice');
-          }    
-          break;
-        case 'fill':
-          image.attr('preserveAspectRatio', 'none');
-          break;
-        case 'none':
-          var realW = 0.32 * imgLast.width;
-          var realH = 0.32 * imgLast.height;
-          
-          image.attr('x', (w - realW) / 2 > 0 ? (w - realW) / 2 : 0)
-              .attr('y', (h - realH) / 2 > 0  ? (h - realH) / 2 : 0)
-              .attr('height', realH)
-              .attr("width", realW)
-              .attr('preserveAspectRatio', 'none')
-              
-          var defs;
-          if ($('svg').children('defs').length !== 0) {
-            defs = svgDom.select('defs');
-          } else {
-            defs = svgDom.insert('defs', ':first-child');
+  
+    const draw = async img => {
+      var canvas = document.createElement('canvas');
+      var ctx = canvas.getContext('2d');
+      canvas.width = img.width;
+      canvas.height = img.height;
+  
+      ctx.drawImage(img, 0, 0);
+      img.style.display = 'none';
+      var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      var data_color = imageData.data;
+            
+      var imgProcess = function() {                
+        for (var i = 0; i < data_color.length; i += 4) {
+          if (Math.max(Math.abs(data_color[i] - color[0]), Math.abs(data_color[i+1] - color[1]), Math.abs(data_color[i+2] - color[2])) < tolerance) {
+            data_color[i + 3] = 0;
           }
-          
-          defs.append('clipPath')
-              .attr("id", id)
-              .append('rect')
-              .attr('x', (w - realW) / 2 > 0 ? (w - realW) / 2 : 0)
-              .attr('y', (h - realH) / 2 > 0  ? (h - realH) / 2 : 0)
-              .attr('width', w)
-              .attr("height", h);
-
-          image.attr('clip-path', 'url(#' + id + ')');
-          break;
+        }
+        ctx.putImageData(imageData, 0, 0);
+      };
+        
+  
+      if (color[3] !== 0) {
+        imgProcess();
       }
-    };
+  
+      const srcLast = await fetchImage(canvas.toDataURL("image/png", 1.0), 'jpeg');
+  
+      const imgLast = new Image();
+      imgLast.src = srcLast;   
+      imgLast.onload = function() {
+        image.attr('x', 0)
+            .attr('y', 0)
+            .attr('height', h)
+            .attr('width', w)
+            .attr('href', srcLast);
+  
+        switch (stretch) {
+          case 'uniform':
+            image.attr('preserveAspectRatio', "xMidYMid meet");
+            break;      
+          case 'uniformtofill':
+            if (w > h) {
+              image.attr('preserveAspectRatio', "xMidYMin slice");    
+            } else {
+              image.attr('preserveAspectRatio', 'xMinYMid slice');
+            }    
+            break;
+          case 'fill':
+            image.attr('preserveAspectRatio', 'none');
+            break;
+          case 'none':
+            var realW = 0.32 * imgLast.width;
+            var realH = 0.32 * imgLast.height;
+            
+            image.attr('x', (w - realW) / 2 > 0 ? (w - realW) / 2 : 0)
+                .attr('y', (h - realH) / 2 > 0  ? (h - realH) / 2 : 0)
+                .attr('height', realH)
+                .attr("width", realW)
+                .attr('preserveAspectRatio', 'none')
+                
+            var defs;
+            if ($('svg').children('defs').length !== 0) {
+              defs = svgDom.select('defs');
+            } else {
+              defs = svgDom.insert('defs', ':first-child');
+            }
+            
+            defs.append('clipPath')
+                .attr("id", id)
+                .append('rect')
+                .attr('x', (w - realW) / 2 > 0 ? (w - realW) / 2 : 0)
+                .attr('y', (h - realH) / 2 > 0  ? (h - realH) / 2 : 0)
+                .attr('width', w)
+                .attr("height", h);
+  
+            image.attr('clip-path', 'url(#' + id + ')');
+            break;
+        }
+        
+        resolve();
 
-    imgLast.src = srcLast;   
-  } 
+      };      
+    }
+  });
 }
 
 const panelBarcode = layer => {
@@ -326,7 +338,7 @@ const panelBarcode = layer => {
   g.attr("id", id)
     .attr("name", data.ObjectName)
     .attr('opacity', data.Opacity / 100)
-    .attr('z-indx', data['Z-Order'])
+    .attr('z-index', data['Z-Order'])
     .attr('transform', "translate(" + x + ", " + y + ") rotate(" + data.Rotation.a + " " + eval(data.Rotation.x + w / 2) + " " + eval(data.Rotation.y +h / 2) + ')');
 
   rect.attr('width', w)
@@ -453,8 +465,9 @@ const initPanel = async present_panel => {
           .attr('viewBox', "0 0 " + present_panel.Width + ' ' + present_panel.Height)
   
   const font_url = "https://fonts.googleapis.com/css?family=" + present_panel.DefaultFont;
+
   const cssRules = await GFontToDataURI(font_url);
-  
+
   if (typeof cssRules !== 'string' && cssRules.length) {
     fonts.push(present_panel.DefaultFont);
 
@@ -477,6 +490,10 @@ const GFontToDataURI = async url => {
     .then(text => {
       if (text.search('The requested URL was not found on this server.') > -1) {
         return 'error';
+      }
+
+      if (text.search('The requested font families are not available.') > -1) {
+        return 'error'
       }
 
       let s = document.createElement('style');

@@ -3,16 +3,16 @@ const readLine = () => {
   const prop = {};
 
   prop['ObjectName'] = property.find('#ObjectName').val();
-  prop['Opacity'] = parseInt(property.find('#Opacity_text').val());
+  prop['Opacity'] = parseInt(property.find('#Opacity').val());
   prop['Z-Order'] = parseInt(property.find('#Z-Order_text').val());
   prop['Start'] = {
-    x: parseFloat(property.find('#Start_x').val()),
-    y: parseFloat(property.find('#Start_y').val())
+    x: convertToPixel(parseFloat(property.find('#Start_x').val()), DU),
+    y: convertToPixel(parseFloat(property.find('#Start_y').val()), DU)
   };
 
   prop['End'] = {
-    x: parseFloat(property.find('#End_x').val()),
-    y: parseFloat(property.find('#End_y').val())
+    x: convertToPixel(parseFloat(property.find('#End_x').val()), DU),
+    y: convertToPixel(parseFloat(property.find('#End_y').val()), DU)
   };
 
   prop['Style'] = property.find('#Style').val();
@@ -30,22 +30,22 @@ const readEllipse = () => {
   const property = $('#property');
 
   prop['ObjectName'] = property.find('#ObjectName').val();
-  prop['Opacity'] = parseInt(property.find('#Opacity_text').val());
+  prop['Opacity'] = parseInt(property.find('#Opacity').val());
   prop['Z-Order'] = parseInt(property.find('#Z-Order_text').val());
   prop['Location'] = {
-    x: parseFloat(property.find('#Location_x').val()),
-    y: parseFloat(property.find('#Location_y').val())
+    x: convertToPixel(parseFloat(property.find('#Location_x').val()), DU),
+    y: convertToPixel(parseFloat(property.find('#Location_y').val()), DU)
   };
 
   prop['Size'] = {
-    width: parseFloat(property.find("#Size_x").val()),
-    height: parseFloat(property.find('#Size_y').val())
+    width: convertToPixel(parseFloat(property.find('#Size_x').val()), DU),
+    height: convertToPixel(parseFloat(property.find('#Size_y').val()), DU)
   };
 
   prop['Rotation'] = {
     a: parseFloat(property.find('#Rotation_angle').val()),
-    x: parseFloat(property.find('#Rotation_x').val()),
-    y: parseFloat(property.find('#Rotation_y').val())
+    x: convertToPixel(parseFloat(property.find('#Rotation_x').val()), DU),
+    y: convertToPixel(parseFloat(property.find('#Rotation_y').val()), DU)
   };
 
   prop['BorderStyle'] = property.find('#BorderStyle').val();
@@ -69,22 +69,22 @@ const readPicture = async () => {
   const property = $('#property');
 
   prop['ObjectName'] = property.find('#ObjectName').val();
-  prop['Opacity'] = parseInt(property.find('#Opacity_text').val());
+  prop['Opacity'] = parseInt(property.find('#Opacity').val());
   prop['Z-Order'] = parseInt(property.find('#Z-Order_text').val());
   prop['Location'] = {
-    x: parseFloat(property.find('#Location_x').val()),
-    y: parseFloat(property.find('#Location_y').val())
+    x: convertToPixel(parseFloat(property.find('#Location_x').val()), DU),
+    y: convertToPixel(parseFloat(property.find('#Location_y').val()), DU)
   };
 
   prop['Size'] = {
-    width: parseFloat(property.find("#Size_x").val()),
-    height: parseFloat(property.find('#Size_y').val())
+    width: convertToPixel(parseFloat(property.find('#Size_x').val()), DU),
+    height: convertToPixel(parseFloat(property.find('#Size_y').val()), DU)
   };
 
   prop['Rotation'] = {
     a: parseFloat(property.find('#Rotation_angle').val()),
-    x: parseFloat(property.find('#Rotation_x').val()),
-    y: parseFloat(property.find('#Rotation_y').val())
+    x: convertToPixel(parseFloat(property.find('#Rotation_x').val()), DU),
+    y: convertToPixel(parseFloat(property.find('#Rotation_y').val()), DU)
   };
 
   prop['Source'] = property.find('#Source').val();
@@ -115,22 +115,22 @@ const readBarcode = () => {
   const property = $('#property');
 
   prop['ObjectName'] = property.find('#ObjectName').val();
-  prop['Opacity'] = parseInt(property.find('#Opacity_text').val());
+  prop['Opacity'] = parseInt(property.find('#Opacity').val());
   prop['Z-Order'] = parseInt(property.find('#Z-Order_text').val());
   prop['Location'] = {
-    x: parseFloat(property.find('#Location_x').val()),
-    y: parseFloat(property.find('#Location_y').val())
+    x: convertToPixel(parseFloat(property.find('#Location_x').val()), DU),
+    y: convertToPixel(parseFloat(property.find('#Location_y').val()), DU)
   };
 
   prop['Size'] = {
-    width: parseFloat(property.find("#Size_x").val()),
-    height: parseFloat(property.find('#Size_y').val())
+    width: convertToPixel(parseFloat(property.find('#Size_x').val()), DU),
+    height: convertToPixel(parseFloat(property.find('#Size_y').val()), DU)
   };
 
   prop['Rotation'] = {
     a: parseFloat(property.find('#Rotation_angle').val()),
-    x: parseFloat(property.find('#Rotation_x').val()),
-    y: parseFloat(property.find('#Rotation_y').val())
+    x: convertToPixel(parseFloat(property.find('#Rotation_x').val()), DU),
+    y: convertToPixel(parseFloat(property.find('#Rotation_y').val()), DU)
   };
 
   prop['Type'] = property.find('#Type').val();
@@ -157,22 +157,22 @@ const readText = () => {
   prop['DesignerText'] = property.find('#DesignerText').val();
   prop['PrintText'] = property.find('#PrintText').val();
   prop['ObjectName'] = property.find('#ObjectName').val();
-  prop['Opacity'] = parseInt(property.find('#Opacity_text').val());
+  prop['Opacity'] = parseInt(property.find('#Opacity').val());
   prop['Z-Order'] = parseInt(property.find('#Z-Order_text').val());
   prop['Location'] = {
-    x: parseFloat(property.find('#Location_x').val()),
-    y: parseFloat(property.find('#Location_y').val())
+    x: convertToPixel(parseFloat(property.find('#Location_x').val()), DU),
+    y: convertToPixel(parseFloat(property.find('#Location_y').val()), DU)
   };
 
   prop['Size'] = {
-    width: parseFloat(property.find("#Size_x").val()),
-    height: parseFloat(property.find('#Size_y').val())
+    width: convertToPixel(parseFloat(property.find('#Size_x').val()), DU),
+    height: convertToPixel(parseFloat(property.find('#Size_y').val()), DU)
   };
 
   prop['Rotation'] = {
     a: parseFloat(property.find('#Rotation_angle').val()),
-    x: parseFloat(property.find('#Rotation_x').val()),
-    y: parseFloat(property.find('#Rotation_y').val())
+    x: convertToPixel(parseFloat(property.find('#Rotation_x').val()), DU),
+    y: convertToPixel(parseFloat(property.find('#Rotation_y').val()), DU)
   };
 
   prop['FontFamily'] = property.find("#FontFamily").val();
@@ -203,9 +203,12 @@ const readPanel = () => {
   var prop = {};
   const property = $('#property');
 
-  prop['Width'] = parseFloat(property.find('#Width').val());
-  prop['Height'] = parseFloat(property.find('#Height').val());
-  prop['Opacity'] = parseInt(property.find('#Opacity_text').val());
+  prop['DisplayUnit'] = property.find('#DisplayUnit').val();
+  DU = displayUnit.indexOf(prop['DisplayUnit']);
+
+  prop['Width'] = convertToPixel(parseFloat(property.find('#Width').val()), DU);
+  prop['Height'] = convertToPixel(parseFloat(property.find('#Height').val()), DU);
+  prop['Opacity'] = parseInt(property.find('#Opacity').val());
   prop['DefaultFont'] = property.find("#DefaultFont").val();
   prop['DefaultFontSize'] = parseInt(property.find("#DefaultFontSize").val());
 

@@ -69,6 +69,11 @@
     <script src='./assets/js/assist/activity/index.js'></script>
     <script src='./assets/js/assist/activity/action_panel.js'></script>
     <script src='./assets/js/assist/activity/action_property.js'></script>
+    <script src='./assets/js/assist/xmlProcess/index.js'></script>
+    <script src='./assets/js/assist/xmlProcess/encode.js'></script>
+    <script src='./assets/js/assist/xmlProcess/decode.js'></script>
+    <script src='./assets/js/assist/part/unitConvert.js'></script>
+
   </head>
 
   <body>
@@ -89,7 +94,7 @@
 
     <div class="container-fluid text-left">
       <div class="row content">
-          <div class="col-sm-4 sidenav TA" id='Scrollstyle1'>
+          <div class="sidenav TA" id='Scrollstyle1' style='width: 500px'>
             <div class="panel panel-primary">
               <div class="panel-heading">Tool Box</div>
               <div class="panel-body" id='toolbox'>
@@ -112,7 +117,7 @@
 
           </div>
 
-          <div class="col-sm-6 text-left"> 
+          <div class="text-left" id='panel_parent' val='1' style='position: absolute; left: 510px'> 
             <div id='panel'></div>
           </div> 
 
@@ -126,7 +131,7 @@
           </div>   -->
       </div>
     </div>
-
+    <input type='file' id='badge_load' style="display: none" />
     <!-- <footer class="container-fluid text-center">
       <p>by DAVID</p>
     </footer> -->

@@ -4,27 +4,20 @@
 }
 
 .row.content {
-  height: 100%;
   background: #555;
 }
 
 .sidenav {
   padding-top: 15px;
   background-color: #f1f1f1;
-  height: 700px;
-}
-
-footer {
-  background-color: rgba(8, 7, 7, 0.835);
-  color: white;
-  padding: 4px;
+  height: 100%;
 }
 
 .drawing-tool {
   zoom: 100%;
   width: 55px;
   height: 50px;
-  margin-left: 5px;
+  margin-left: 0;
 }
 
 .svg-rect {
@@ -99,56 +92,61 @@ footer {
   background-color: white;
   margin-top: 35px;
   margin-left: 20px;
-  width: 415px;
-  height: 615px;
-  overflow-x: scroll;
-  overflow-y: scroll;
+  width: 400px;
+  height: 600px;
+  /* overflow-x: scroll;
+  overflow-y: scroll; */
 }
 
-#panel::-webkit-scrollbar-track
+/* 
+#panel_parent::-webkit-scrollbar-track
 {
 	border-radius: 10px;
 	background-color: #555;
 }
 
-#panel::-webkit-scrollbar
+#panel_parent::-webkit-scrollbar
 {
 	width: 15px;
 	background-color: #555;
 }
 
-#panel::-webkit-scrollbar-thumb
+#panel_parent::-webkit-scrollbar-thumb
 {
 	border-radius: 3px;
 	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.8);
 	background-color: rgb(128, 128, 128);
 }
 
-#panel::-webkit-scrollbar-corner
+#panel_parent::-webkit-scrollbar-corner
 {
   background-color: #555;
 }
 
-/* 
-#panel::-webkit-resizer
+
+#panel_parent::-webkit-resizer
 {
   background-color: #333;
 } */
 
 
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 1920px) {
   .sidenav {
-    height: auto;
     padding: 15px;
   }
   
   .row.content {
-    height: auto;
+    height: 886px;
   } 
+}
 
-  .slider {
-    /* margin-top: 50%; */
+@media screen and (min-width: 1930px) and (max-width: 7700px) {  
+  .sidenav {
+    padding: 15px;
   }
+  .row.content {
+    height: 3686px;
+  } 
 }
 
 input[type=number]::-webkit-inner-spin-button {
@@ -158,8 +156,4 @@ input[type=number]::-webkit-inner-spin-button {
 .layout_li:hover {
   color:pink;
   cursor:pointer;
-}
-
-.rotate {
-  cursor: url('/assets/icons/arrows.svg'), auto;
 }

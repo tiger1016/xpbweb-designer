@@ -11,7 +11,7 @@ const selectRect = (id, data) => {
           .attr("x2", data.End.x)
           .attr("y2", data.End.y)
           .attr("stroke", "#f22311")
-          .attr("stroke-width", data.Thickness + 1)
+          .attr("stroke-width", data.Thickness + 6)
           .attr("stroke-opacity",'0.5')
   } else {
     svgDom.append('g')
@@ -38,10 +38,10 @@ const selectRect = (id, data) => {
       var y2 = parseFloat($(e.target).attr("y2"));
 
       
-      if (Math.pow(curX - x1, 2) + Math.pow(curY - y1, 2) < 100) {
+      if (Math.pow(curX - x1, 2) + Math.pow(curY - y1, 2) < 150) {
         $(e.target).attr("type", true);
         pos = 'LR';
-      } else if (Math.pow(curX - x2, 2) + Math.pow(curY - y2, 2) < 100) {
+      } else if (Math.pow(curX - x2, 2) + Math.pow(curY - y2, 2) < 150) {
         $(e.target).attr("type", false);
         pos = 'LR';
       } else pos = 'C';
@@ -81,13 +81,13 @@ const selectRect = (id, data) => {
         this.style.cursor = 'sw-resize';
         break;
       case 'C':
-        this.style.cursor = 'move';
+        this.style.cursor = 'url(assets/icons/mouse-move.svg) 27 27, move';
         break;
       case 'LR':
         this.style.cursor = 'crosshair';
         break;
       case 'R':
-        this.style.cursor = 'url(assets/icons/arrows.svg), auto';
+        this.style.cursor = 'url(assets/icons/arrows.svg) 28 28, auto';
         break;
     }
   });
@@ -113,12 +113,12 @@ const action = () => {
 
   $('#panel svg').mousemove(function(e) {
     if (clicked_down) {
-      if (this.style.cursor === 'move') {
+      if (this.style.cursor.search('move') > -1) {
         move(e.offsetX - x, e.offsetY - y);
         x = e.offsetX;
         y = e.offsetY;
       } else if (this.style.cursor.search('resize') > -1 || this.style.cursor === 'crosshair') {
-        resize(this.style.cursor, e.offsetX, e.offsetY);
+        resize(this.style.cursor, e.offsetX, e.offsetY);        
       }  else {
         rotate(x, y, e.offsetX, e.offsetY);
       }
