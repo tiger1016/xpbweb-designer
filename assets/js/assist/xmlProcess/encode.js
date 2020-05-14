@@ -13,7 +13,7 @@ const parseRectAndEllipse =  (parentNode, layers) => {
 
   var layerName;
   var data = {};
-  var x, y, w, h, rotX, rotY, rotA, fillOpacity, fillColor, strokeOpacity, strokeColor, r;
+  var x, y, w, h, rotX, rotY, rotA;
 
   for (var i = 0; i < nodes.length; i ++) {        
     if (now.nodeType === 1) {
@@ -23,7 +23,9 @@ const parseRectAndEllipse =  (parentNode, layers) => {
           y = parseFloat(now.lastChild.textContent);
           break;
         case 'Name':
-          layerName = now.textContent.toLowerCase();
+          syncObjectID(now.textContent);
+          layerName = now.textContent;
+          data['ObjectName'] = now.textContent;
           break;
         case 'Opacity':
           data['Opacity'] = parseFloat(now.textContent)*100;
@@ -124,7 +126,9 @@ const parseLine = (parentNode, layers) => {
     if (now.nodeType === 1) {
       switch (now.nodeName) {            
         case 'Name':
-          layerName = now.textContent.toLowerCase();
+          syncObjectID(now.textContent);
+          layerName = now.textContent;
+          data['ObjectName'] = now.textContent;
           break;
         case "Location":
           x = now.firstChild.textContent;
@@ -209,7 +213,10 @@ const parseLabel = async (parentNode, layers) => {
           data['Location'] = { x, y };
           break;
         case 'Name':
-          layerName = now.textContent.toLowerCase().replace(/label/g, 'text');
+          var temp = now.textContent.capitalize().replace(/Label/g, 'Text');
+          syncObjectID(temp);
+          layerName = temp;
+          data['ObjectName'] = temp;
           break;
         case 'Opacity':
           data["Opacity"] = parseFloat(now.textContent)*100;
@@ -242,7 +249,7 @@ const parseLabel = async (parentNode, layers) => {
           if (now.textContent === "") {
             data['Fill'] = {
               Style: 'SolidColor',
-              Color: '#ffffff00'
+              Color: '2 0 0 100 0 0 #ffffff00'
             };
             break;
           }
@@ -253,7 +260,7 @@ const parseLabel = async (parentNode, layers) => {
           if (now.textContent === "") {
             data['Outline'] = {
               Style: 'SolidColor',
-              Color: '#000000ff'
+              Color: '2 0 0 100 0 0 #000000ff'
             }
             break;
           }
@@ -264,7 +271,7 @@ const parseLabel = async (parentNode, layers) => {
           data['FontFamily'] = now.textContent;
           break;
         case "FontSize":
-          data['FontSize'] = now.textContent;
+          data['FontSize'] = now.textContent && now.textContent !== '' ? now.textContent : 12;
           break;
         case 'FontWeightAsString':
           var weight = now.textContent.toLowerCase();
@@ -279,36 +286,34 @@ const parseLabel = async (parentNode, layers) => {
                         thin: 100,
                         bold: 700
                       }
-          data['FontWeight'] = table[weight];
+          data['FontWeight'] = weight && table[weight] ? table[weight] : 400;
           break;
-        case 'FontStyleAsString':
-          if (now.textContent !== '') {
-            data['FontStyle'] = now.textContent;   
-          }                 
+        case 'FontStyleAsString':          
+            data['FontStyle'] = now.textContent && now.textContent !== '' ? now.textContent : 'Normal';  
           break;
         case "FontStretchAsString":
           var stretch = now.textContent.toLowerCase();
           var table = {
                         normal: 'normal',
-                        condensed: 'condensed',
-                        expanded: 'expanded',
-                        semiexpanded: 'semi-expanded',
-                        semicondensed: 'semi-condensed',
-                        extracondensed: 'extra-condensed',
-                        extraexpanded: 'extra-expanded',
-                        ultracondensed: 'ultra-condensed',
-                        ultraexpanded: 'ultra-expanded',
+                        condensed: 'Condensed',
+                        expanded: 'Expanded',
+                        semiexpanded: 'Semi-expanded',
+                        semicondensed: 'Semi-condensed',
+                        extracondensed: 'Extra-condensed',
+                        extraexpanded: 'Extra-expanded',
+                        ultracondensed: 'Ultra-condensed',
+                        ultraexpanded: 'Ultra-expanded',
                       }
-          data['FontStretch'] = table[stretch];
+          data['FontStretch'] = stretch && table[stretch] ? table[stretch] : 'Normal';
           break;
         case "VerticalAlignment":
-          data['VAlignment'] = now.textContent === 'Center' ? 'Middle' : now.textContent;
+          data['VAlignment'] = now.textContent === 'Center' ? 'Middle' : now.textContent && now.textContent !== '' ? now.textContent : 'Middle';
           break;
         case "TextAlignment":
-          data['HAlignment'] = now.textContent;
+          data['HAlignment'] = now.textContent && now.textContent !== '' ? now.textContent : 'Center';
           break;
         case "TextDecoration":                    
-          data['TextDecoration'] = now.textContent;
+          data['TextDecoration'] = now.textContent && now.textContent !== '' ? now.textContent : 'None';
           break;
         case 'TextWrapping':
           data['TextWrapping'] = now.textContent.search('Wrap') === 0 ? 'Resize' : 'Fixed';
@@ -357,7 +362,10 @@ const parseImage = (parentNode, layers) => {
           };
           break;
         case 'Name':
-          layerName = now.textContent.toLowerCase().replace(/image/g, 'picture');
+          var temp = now.textContent.capitalize().replace(/Image/g, 'Picture');
+          syncObjectID(temp);
+          layerName = temp;
+          data['ObjectName'] = temp;
           break;
         case 'Opacity':
           data['Opacity'] = parseFloat(now.textContent)*100;
@@ -387,7 +395,7 @@ const parseImage = (parentNode, layers) => {
           data['TransparencyTolerance'] = parseFloat(now.textContent);
           break;
         case 'Stretch':
-          data['Stretch'] = now.textContent;
+          data['Stretch'] = now.textContent && now.textContent !== '' ? now.textContent : 'Uniform';
           break;
       }
     }
@@ -416,7 +424,9 @@ const parseBarcode = (parentNode, layers) => {
     if (now.nodeType === 1) {
       switch (now.nodeName) {
         case 'Name':
-          layerName = now.textContent.toLowerCase();
+          syncObjectID(now.textContent);
+          layerName = now.textContent;
+          data['ObjectName'] = now.textContent;
           break;
         case 'Opacity':
           data['Opacity'] = parseFloat(now.textContent)*100;
@@ -454,7 +464,7 @@ const parseBarcode = (parentNode, layers) => {
           data['Data'] = now.textContent;
           break;
         case "Stretch":
-          data['Stretch'] = now.textContent;
+          data['Stretch'] = now.textContent && now.textContent !== '' ? now.textContent : 'Uniform';
           break;
       }
     }
@@ -469,4 +479,31 @@ const parseBarcode = (parentNode, layers) => {
   };
 
   layers.push({ layerName, data });
+}
+
+
+const syncObjectID = text => {
+  var num = parseInt(text.replace(/[a-z A-Z]/g, ''));
+  var str = text.replace(/[0-9]/g, '').toLowerCase();
+
+  switch (str) {
+    case 'rectangle':
+      if (rect_num === num) rect_num ++;
+      break;
+    case 'line':
+      if (line_num === num) line_num ++;
+      break;
+    case 'picture':
+      if (picture_num === num) picture_num ++;
+      break;
+    case 'text':
+      if (text_num === num) text_num ++;
+      break;
+    case 'barcode':
+      if (barcode_num === num) barcode_num ++;
+      break;
+    case 'ellipse':
+      if (ellipse_num === numm) ellipse_num ++;
+      break;
+  }
 }

@@ -1,16 +1,16 @@
 const panel = layer => {
   return new Promise(async resolve => {
-    if (layer.layerName && layer.layerName.search('line') === 0) {
+    if (layer.layerName && layer.layerName.toLowerCase().search('line') === 0) {
       panelLine(layer);
-    } else if (layer.layerName && layer.layerName.search('rectangle') === 0) {
+    } else if (layer.layerName && layer.layerName.toLowerCase().search('rectangle') === 0) {
       panelRect(layer);
-    } else if (layer.layerName && layer.layerName.search('ellipse') === 0) {
+    } else if (layer.layerName && layer.layerName.toLowerCase().search('ellipse') === 0) {
       panelEllipse(layer);    
-    } else if (layer.layerName && layer.layerName.search('text') === 0) {
+    } else if (layer.layerName && layer.layerName.toLowerCase().search('text') === 0) {
       await panelText(layer);    
-    } else if (layer.layerName && layer.layerName.search('picture') === 0) {
+    } else if (layer.layerName && layer.layerName.toLowerCase().search('picture') === 0) {
       await panelPicture(layer);    
-    } else if (layer.layerName && layer.layerName.search('barcode') === 0) {
+    } else if (layer.layerName && layer.layerName.toLowerCase().search('barcode') === 0) {
       panelBarcode(layer);    
     }
 
@@ -164,13 +164,16 @@ const panelText = async layer => {
     gOut.selectAll('rect').attr('fill', fillColor);
   }
 
-  if (showBorder && !fillColor && (fillColor.split('').reverse().join('').search('00') === 0 || fillColor === 'none' || fillColor.search('#ffffff') === 0)) {
-    gOut.selectAll('rect')
-        .attr('stroke', "#cdcdcd")
-        .attr("stroke-alignment", 'inner')
-        .attr('stroke-width', 1)
-        .attr('stroke-opacity', 1)
-        .attr('stroke-dasharray', 2*1.7695275590551178 + " " + 1*1.7695275590551178);
+  if (showBorder)
+  {
+    if (!fillColor || ((fillColor && fillColor.split('').reverse().join('').search('00') === 0) || fillColor === 'none' || (fillColor && fillColor.search('#ffffff') === 0))) {
+      gOut.selectAll('rect')
+          .attr('stroke', "#cdcdcd")
+          .attr("stroke-alignment", 'inner')
+          .attr('stroke-width', 1)
+          .attr('stroke-opacity', 1)
+          .attr('stroke-dasharray', "4 1");
+    }
   } else {
     gOut.selectAll('rect').attr('stroke', "none");        
   }
@@ -463,6 +466,8 @@ const initPanel = async present_panel => {
           .attr('font-family', present_panel.DefaultFont)
           .attr("font-size", present_panel.DefaultFontSize)
           .attr('viewBox', "0 0 " + present_panel.Width + ' ' + present_panel.Height)
+  
+  if (!present_panel.DefaultFont) return;
   
   const font_url = "https://fonts.googleapis.com/css?family=" + present_panel.DefaultFont;
 

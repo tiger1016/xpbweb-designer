@@ -3,7 +3,7 @@ var action_mode = true;
 const selectRect = (id, data) => {
   $('#selected').remove();
 
-  if (id.replace(/[0-9]/g, '') === 'line') {
+  if (id.toLowerCase().replace(/[0-9]/g, '') === 'line') {
     svgDom.append('line')
           .attr("id", 'selected')
           .attr('x1', data.Start.x)
@@ -158,7 +158,7 @@ const getPosition = (x, y, oX, oY, w, h) => {
 const move = (delta_x, delta_y) => {
   var data = null;
 
-  if (activeLayer.layerName.replace(/[0-9]/g, '') === 'line') {
+  if (activeLayer.layerName.toLowerCase().replace(/[0-9]/g, '') === 'line') {
     const line_selected = svgDom.select('#selected');
     line_selected.attr('x1', parseFloat(line_selected.attr('x1')) + delta_x)
                 .attr("y1", parseFloat(line_selected.attr('y1')) + delta_y)

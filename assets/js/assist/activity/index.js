@@ -47,12 +47,12 @@ const initializeParams = () => {
 const toolboxInit = () => {
   const toolbox = $('#toolbox');
   toolbox.append(
-    ` <button class="drawing-tool svg-rect" id='bn-rectangle'></button>
-      <button class="drawing-tool svg-line" id='bn-line'></button>
-      <button class="drawing-tool svg-ellipse" id='bn-ellipse'></button>
-      <button class="drawing-tool svg-picture" id='bn-picture'></button>
-      <button class="drawing-tool svg-barcode" id='bn-barcode'></button>
-      <button class="drawing-tool svg-text" id='bn-text'></button>`
+    ` <button class="drawing-tool svg-rect" id='bn-Rectangle'></button>
+      <button class="drawing-tool svg-line" id='bn-Line'></button>
+      <button class="drawing-tool svg-ellipse" id='bn-Ellipse'></button>
+      <button class="drawing-tool svg-picture" id='bn-Picture'></button>
+      <button class="drawing-tool svg-barcode" id='bn-Barcode'></button>
+      <button class="drawing-tool svg-text" id='bn-Text'></button>`
   );
 
   toolbox.css('padding-top', '7px');
@@ -69,7 +69,7 @@ const createTool = async id => {
 
   formatShape(name);
 
-  if (name === 'picture') {
+  if (name === 'Picture') {
     const file = $('#property').find('#DesignerSource');
 
     file.trigger('click');
@@ -135,7 +135,7 @@ const refreshLayers = () => {
 
   var width, height;
 
-  switch (activeLayer.layerName.replace(/[0-9]/g, '')) {
+  switch (activeLayer.layerName.toLowerCase().replace(/[0-9]/g, '')) {
     case 'ellipse':
       width = parseFloat(g.attr('width'));
       height= parseFloat(g.attr('height'));
@@ -243,7 +243,7 @@ const refreshPanel = async data => {
     .attr("DefaulFontSize", data.DefaultFontSize)
     .attr("viewBox", "0 0 " + data.Width + ' ' + data.Height);
 
-  if (fonts.indexOf(data.DefaultFont) < 0) {
+  if (data.DefaultFont && fonts.indexOf(data.DefaultFont) < 0) {
     const font_url = "https://fonts.googleapis.com/css?family=" + data.DefaultFont;
     const cssRules = await GFontToDataURI(font_url);
 
@@ -258,7 +258,15 @@ const refreshPanel = async data => {
   }
 }
 
-const loadPanel = () => {
+const loadPanel = async () => {
+  if (layers.length > 1) {
+    if (confirm('Do you want to save recent work?')) {
+      await savePanel();
+    }    
+  }
+
+  initializeParams();
+
   const inputXML = $('#badge_load');
   inputXML.unbind();
   inputXML.trigger('click');

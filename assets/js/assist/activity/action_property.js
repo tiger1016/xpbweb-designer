@@ -6,7 +6,7 @@ const property_action = () => {
     
     var name = activeLayer.layerName.replace(/[0-9]/g, '');
     var data = await readShape(name);
-
+    
     saveActiveLayer(data);
 
     if ($(e.target).attr("id").search('Z-Order') === 0) {

@@ -217,7 +217,7 @@ const readPanel = () => {
 
 
 const readShape = async name => {
-  switch (name) {
+  switch (name.toLowerCase()) {
     case 'line':
       return readLine();
     case 'rectangle':

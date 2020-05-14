@@ -1,6 +1,6 @@
 const encodeXML = xmlDom => {
   console.log(xmlDom)
-  
+
   initializeParams();
 
   var designSign = false;
@@ -88,21 +88,16 @@ const svgFormFormat = (nodeName, active, panel) => {
       }
       break;
     case 'DefaultFontFamilyAsString':
-      if (active && active.textContent !== "") {
-        var fontStyle = active.textContent;  
-        panel['DefaultFont'] = fontStyle;                  
-      }
+        panel['DefaultFont'] = active.textContent;  
       break;
     case 'DefaultFontSize':
-      if (active && active.textContent !== "") {
-        panel['DefaultFontSize'] = active.textContent;
-      }
+        panel['DefaultFontSize'] = active.textContent && active.textContent !== '' ? active.textContent : 12;
       break;
     case "FrontSideOpacity":
-      if (active && active.textContent !== "") {
         panel['Opacity'] = parseFloat(active.textContent)*100;
-      }
       break;
+    case 'DisplayUnits':
+        panel['DisplayUnits'] = active.textContent;
   }
 }
 
@@ -110,16 +105,16 @@ const renderXML = () => {
   console.log(layers)
 
   layers.map(async layer => {
-    if (layer.layerName === 'panel') {      
+    if (layer.layerName === 'panel') {
       const panel = $('#panel');
-      
+
       panel.addClass('screen');
       panel.trigger('click');
-    
+
       toolboxInit();
-    
+
       property_action(); 
-      
+
       await initPanel(layer.data);
       await refreshPanel(layer.data);
     }
@@ -129,8 +124,7 @@ const renderXML = () => {
     if (layer.layerName !== 'panel') {
       await panel(layer);
     }
-  });
-  
+  });  
 
   zOrder();
 }

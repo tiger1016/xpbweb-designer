@@ -203,7 +203,8 @@ const formatText = data => {
     'Extra-expanded',
     'Ultra-expanded',                   
   ];
-  parent.append(getSelect('Font Stretch', fontStretch, data ? fontStretch.indexOf(data.FontStretch) : 4));
+
+  parent.append(getSelect('Font Stretch', fontStretch, data ? fontStretch.indexOf(data.FontStretch) < 0 ? 4 : fontStretch.indexOf(data.FontStretch) : 4));
 
 
   var textDecoration = [
@@ -222,7 +223,7 @@ const formatText = data => {
     'Right',
   ];   
 
-  parent.append(getSelect('H. Alignment', hAlignment, data ? hAlignment.indexOf(data.HAlignment) : 1));
+  parent.append(getSelect('H. Alignment', hAlignment, data ? hAlignment.indexOf(data.HAlignment) < 0 ? 1 : hAlignment.indexOf(data.HAlignment) : 1));
 
   var vAlignment = [
     'Top',
@@ -230,7 +231,7 @@ const formatText = data => {
     'Bottom',
   ];
 
-  parent.append(getSelect('V. Alignment', vAlignment, data ? vAlignment.indexOf(data.VAlignment) : 1));
+  parent.append(getSelect('V. Alignment', vAlignment, data ? vAlignment.indexOf(data.VAlignment) < 0 ? 1 : vAlignment.indexOf(data.VAlignment) : 1));
 
   var textWrap = [
     'Fixed',
@@ -309,7 +310,7 @@ const formatBarcode = data=> {
     'PLESSEEY',
   ];
 
-  parent.append(getSelect('Type', type, data ? type.indexOf(data.Type) : 7));
+  parent.append(getSelect('Type', type, data ? type.indexOf(data.Type) < 0 ? 7 : type.indexOf(data.Type) : 7));
 
   var stretch = [
     'None',
@@ -317,7 +318,7 @@ const formatBarcode = data=> {
     'Uniform',
     'UniformToFill',
   ];
-  parent.append(getSelect('Stretch', stretch, data ? stretch.indexOf(data.Stretch) : 2));
+  parent.append(getSelect('Stretch', stretch, data ? stretch.indexOf(data.Stretch) < 0 ? 2 : stretch.indexOf(data.Stretch) : 2));
   // parent.append(getHorizontalLine());
 
   // parent.append(getSelect2('Fill', colorStyle, 0, '#ffffff'));
@@ -338,10 +339,10 @@ const formatShape = layer => {
 
   if (typeof layer === 'string') {
     title = layer.capitalize() + ' Properties';
-    name = layer;
+    name = layer.toLowerCase();
     data = null;
   } else {
-    name = layer.layerName.replace(/[0-9]/g, '');
+    name = layer.layerName.toLowerCase().replace(/[0-9]/g, '');
     title = name.capitalize() + ' Properties';
     data = layer.data;
   }

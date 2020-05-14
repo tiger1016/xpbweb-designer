@@ -7,7 +7,7 @@ var text_num = 1;
 
 
 const layout = name => {
-  switch (name) {
+  switch (name.toLowerCase()) {
     case "line":
       name = line_num ? name + line_num : name;
       line_num++;
