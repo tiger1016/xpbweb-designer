@@ -2,18 +2,9 @@ const parseRectAndEllipse =  (parentNode, layers) => {
   const nodes = parentNode.childNodes;
   var now = parentNode.firstChild;
 
-  var shape = 'rect';
-
-  if (parentNode.attributes.getNamedItem('i:type').nodeValue === "Ellipse") {
-    shape = 'ellipse';
-  }
-  else {
-    shape = 'rect';
-  }
-
   var layerName;
   var data = {};
-  var x, y, w, h, rotX, rotY, rotA;
+  var x, y, rotX, rotY, rotA;
 
   for (var i = 0; i < nodes.length; i ++) {        
     if (now.nodeType === 1) {
@@ -21,6 +12,7 @@ const parseRectAndEllipse =  (parentNode, layers) => {
         case 'Location':
           x = parseFloat(now.firstChild.textContent);
           y = parseFloat(now.lastChild.textContent);
+          data['Location'] = { x, y }
           break;
         case 'Name':
           syncObjectID(now.textContent);
@@ -31,8 +23,10 @@ const parseRectAndEllipse =  (parentNode, layers) => {
           data['Opacity'] = parseFloat(now.textContent)*100;
           break;
         case 'Size':
-          w = parseFloat(now.getElementsByTagName('Width')[0].textContent);
-          h = parseFloat(now.getElementsByTagName('Height')[0].textContent);
+          data['Size'] = {
+            width: parseFloat(now.getElementsByTagName('Width')[0].textContent),
+            height: parseFloat(now.getElementsByTagName('Height')[0].textContent)
+          }
           break;
         case 'ZOrder':
           data['Z-Order'] = now.textContent;
@@ -50,7 +44,7 @@ const parseRectAndEllipse =  (parentNode, layers) => {
           var active = now.firstChild;
           var temp = [];
           for (var j = 0; j < now.childNodes.length; j ++) {
-            temp.push(parseFloat(active.textContent)*5.795275590551178);
+            temp.push(parseFloat(active.textContent));
             active = active.nextSibling;
           }
 
@@ -63,7 +57,7 @@ const parseRectAndEllipse =  (parentNode, layers) => {
           if (now.textContent === "") {
             data['Fill'] = {
               Style: 'SolidColor',
-              Color: '#ffffff00'
+              Color: '2 0 0 100 0 0 #ffffff00'
             };
             break;
           }
@@ -74,7 +68,7 @@ const parseRectAndEllipse =  (parentNode, layers) => {
           if (now.textContent === "") {
             data['Outline'] = {
               Style: 'SolidColor',
-              Color: '#000000ff'
+              Color: '2 0 0 100 0 0 #000000ff'
             }
             break;
           }
@@ -82,27 +76,12 @@ const parseRectAndEllipse =  (parentNode, layers) => {
           data['Outline'] = getXMLDynamicColor(now);
           break;
         case 'CornerRadius':
-          data['rx'] = now.textContent;
-          data['ry'] = now.textContent;
+          data['CornerRadius'] = now.textContent;
           break;
       }
     }
 
     now = now.nextSibling;
-  }
-
-
-  if (shape === 'ellipse') {
-    data['cx'] = w / 2;
-    data['cy'] = h / 2;
-    data['rx'] = w / 2;
-    data['ry'] = h / 2;
-  } else {
-    data['Size'] = {
-      width: w,
-      height: h
-    };
-    data['Location'] = { x, y };
   }
 
   data['Rotation'] = {
@@ -146,11 +125,11 @@ const parseLine = (parentNode, layers) => {
           var temp = [];
 
           for (var j = 0; j < now.childNodes.length; j ++) {
-            temp.push(parseFloat(active.textContent)*5.795275590551178);
+            temp.push(parseFloat(active.textContent));
             active = active.nextSibling;
           }
 
-          data['Style'] = temp.length ? temp.join(',') : '0';
+          data['Style'] = temp.length ? temp.join(' ') : '0';
           break;
         case 'Thickness':
           data['Thickness'] = now.textContent;
@@ -159,7 +138,7 @@ const parseLine = (parentNode, layers) => {
           if (now.textContent === "") {
             data['Stroke'] = {
               Style: 'SolidColor',
-              Color: '#000000ff'
+              Color: '2 0 0 100 0 0 #000000ff'
             }
             break;
           }
@@ -294,7 +273,7 @@ const parseLabel = async (parentNode, layers) => {
         case "FontStretchAsString":
           var stretch = now.textContent.toLowerCase();
           var table = {
-                        normal: 'normal',
+                        normal: 'Normal',
                         condensed: 'Condensed',
                         expanded: 'Expanded',
                         semiexpanded: 'Semi-expanded',
@@ -503,7 +482,7 @@ const syncObjectID = text => {
       if (barcode_num === num) barcode_num ++;
       break;
     case 'ellipse':
-      if (ellipse_num === numm) ellipse_num ++;
+      if (ellipse_num === num) ellipse_num ++;
       break;
   }
 }

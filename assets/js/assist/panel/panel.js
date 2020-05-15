@@ -476,7 +476,7 @@ const initPanel = async present_panel => {
   if (typeof cssRules !== 'string' && cssRules.length) {
     fonts.push(present_panel.DefaultFont);
 
-    svgDom.prepend(`<style>svg{stroke:#000;stroke-linecap:round;stroke-linejoin:round;fill:#fff;fill-rule:evenodd;font-family:${present_panel.DefaultFont};font-size:14px;text-anchor:middle}svg text{stroke:none}</style>`)
+    $('#panel svg').prepend(`<style>svg{stroke:#000;stroke-linecap:round;stroke-linejoin:round;fill:#fff;fill-rule:evenodd;font-family:${present_panel.DefaultFont};font-size:14px;text-anchor:middle}svg text{stroke:none}</style>`)
 
     if ($('#panel svg').children('defs').length === 0) {
       svgDom.insert('defs', ":first-child");

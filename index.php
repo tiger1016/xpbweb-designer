@@ -69,10 +69,10 @@
     <script src='./assets/js/assist/activity/index.js'></script>
     <script src='./assets/js/assist/activity/action_panel.js'></script>
     <script src='./assets/js/assist/activity/action_property.js'></script>
-    <script src='./assets/js/assist/xmlProcess/index.js'></script>
     <script src='./assets/js/assist/xmlProcess/encode.js'></script>
     <script src='./assets/js/assist/xmlProcess/decode.js'></script>
     <script src='./assets/js/assist/part/unitConvert.js'></script>
+    <script src='./assets/js/assist/xmlProcess/index.js'></script>
 
   </head>
 

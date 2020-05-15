@@ -160,7 +160,7 @@ const getXMLRadialGradient = node => {
   var cy = parseFloat(node.getElementsByTagName('d5p1:Center')[0].lastChild.textContent)*100;
   var fx = parseFloat(node.getElementsByTagName('d5p1:GradientOrigin')[0].firstChild.textContent)*100;
   var fy = parseFloat(node.getElementsByTagName('d5p1:GradientOrigin')[0].lastChild.textContent)*100;
-  var r = node.getElementsByTagName('d5p1:RadiusX')[0].firstChild.textContent;
+  var r = parseFloat(node.getElementsByTagName('d5p1:RadiusX')[0].firstChild.textContent)*100;
   
   var result = gradStops.length + ' ' + cx + ' ' + cy + " " + fx + ' ' + fy + ' ' + r;
   

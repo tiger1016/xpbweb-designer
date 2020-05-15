@@ -8,8 +8,7 @@ const createPanel = async () => {
   }
 
   initializeParams();
-
-  panel.addClass('screen')
+  panel.addClass('screen');
   panel.trigger('click');
 
   toolboxInit();
@@ -42,6 +41,8 @@ const initializeParams = () => {
   $('#toolbox').empty();
   $('#property').empty();
   $('#panel').empty();
+  $('#panel').attr('style', '');
+  $('#panel').removeClass('screen');
 }
 
 const toolboxInit = () => {
@@ -308,5 +309,5 @@ const loadPanel = async () => {
 }
 
 const savePanel = async () => {
-  // decodeXML();
+  await decodeXML();
 }
