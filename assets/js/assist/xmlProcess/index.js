@@ -99,10 +99,11 @@ const svgFormFormat = (nodeName, active, panel) => {
   }
 }
 
-const renderXML = () => {
+const renderXML = async () => {
   console.log(layers)
 
-  layers.map(async layer => {
+  for (var i =0; i < layers.length; i ++) {
+    var layer = layers[i];
     if (layer.layerName === 'panel') {
       const panel = $('#panel');
 
@@ -116,13 +117,14 @@ const renderXML = () => {
       await initPanel(layer.data);
       await refreshPanel(layer.data);
     }
-  });
+  }
   
-  layers.map(async layer => {
+  for (var i = 0; i < layers.length; i ++) {
+    var layer = layers[i];
     if (layer.layerName !== 'panel') {
       await panel(layer);
     }
-  });  
+  }
 
   zOrder();
 }
