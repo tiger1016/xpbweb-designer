@@ -1,5 +1,4 @@
-const panel = layer => {
-  return new Promise(async resolve => {
+const panel = async layer => {
     if (layer.layerName && layer.layerName.toLowerCase().search('line') === 0) {
       panelLine(layer);
     } else if (layer.layerName && layer.layerName.toLowerCase().search('rectangle') === 0) {
@@ -11,11 +10,9 @@ const panel = layer => {
     } else if (layer.layerName && layer.layerName.toLowerCase().search('picture') === 0) {
       await panelPicture(layer);    
     } else if (layer.layerName && layer.layerName.toLowerCase().search('barcode') === 0) {
-      panelBarcode(layer);    
+      panelBarcode(layer);
     }
 
-    resolve();
-  })  
 }
 
 const panelLine = layer => {
@@ -490,7 +487,7 @@ const initPanel = async present_panel => {
 
 
 const GFontToDataURI = async url => {
-  return fetch(url)
+  return fetch(url, {'mode': 'no-cors'})
     .then(resp => resp.text())
     .then(text => {
       if (text.search('The requested URL was not found on this server.') > -1) {
